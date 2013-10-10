@@ -35,7 +35,7 @@ int read_pixels(FILE *fr, pixel *pix1, intptr_t *i_pix1, pixel *pix2, intptr_t *
     char buffer[20];
     char c;
     int i;
-    int j;
+    int j = 0;
 
     while ((c = getc(fr)) != EOF) {
         if (c == '\n') {
@@ -46,11 +46,13 @@ int read_pixels(FILE *fr, pixel *pix1, intptr_t *i_pix1, pixel *pix2, intptr_t *
             (*i_pix1) = (intptr_t) w;
             (*i_pix2) = (intptr_t) v;
 
-//            pix1[j] = x;
-//            pix2[j] = y;
+            pix1[j] = x;
+            pix2[j] = y;
 
-            // stop after 8 values
-            return ++j == 8;
+            // stop after 4*8 values
+            if (++j == 8 * 4) {
+                return 0;
+            }
 
         } else if (i < 20) {
             buffer[i++] = c;
@@ -70,14 +72,17 @@ int main(int argc, char **argv)
 
     FILE *fr = fopen(argv[1], "r");
 
-    pixel *pix1;
+    pixel *pix1 = (pixel*) malloc(4 * 8 * sizeof(pixel));
     intptr_t i_pix1;
-    pixel *pix2;
+    pixel *pix2 = (pixel*) malloc(4 * 8 * sizeof(pixel));
     intptr_t i_pix2;
 
     while (read_pixels(fr, pix1, &i_pix1, pix2, &i_pix2) != EOF) {
-        printf("%d %d\n", (int) i_pix1, (int) i_pix2);
+        printf("%d %d %d %d\n", (int) i_pix1, (int) i_pix2, pix1[0], pix2[0]);
     }
+
+    int y = x264_pixel_satd_8x4(pix1, i_pix1, pix2, i_pix2);
+    printf("satd = %d\n", y);
 
     fclose(fr);
 
