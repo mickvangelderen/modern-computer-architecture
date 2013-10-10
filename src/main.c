@@ -28,38 +28,29 @@ void help(char **argv)
     printf("Usage: %s <file>\n", argv[0]);
 }
 
-int read_pixels(FILE *fr, pixel *pix1, pixel *pix2, int max)
+int read_pixels(FILE *fr, intptr_t *i_pix1, pixel **pix1, intptr_t *i_pix2, pixel **pix2)
 {
-    int w, v, x, y;
+    int x, y, j, max;
 
-    char buffer[20];
-    char c;
-    int i;
-    int j = 0;
+    fscanf(fr, "%d,%d", &x, &y);
 
-    while ((c = getc(fr)) != EOF) {
-        if (c == '\n') {
+    (*i_pix1) = (intptr_t) x;
+    (*i_pix2) = (intptr_t) y;
 
-            buffer[i] = '\0';
+    max = y > x ? y : x;
 
-            if (i > 1) { // skip empty lines
+    (*pix1) = (pixel*) malloc(4 * max * sizeof(pixel));
+    (*pix2) = (pixel*) malloc(4 * max * sizeof(pixel));
 
-                sscanf(buffer, "%d,%d", &x, &y);
+    j = 0;
 
-                pix1[j] = x;
-                pix2[j] = y;
+    while (fscanf(fr, "%d,%d", &x, &y) != EOF) {
 
-                // stop after 4*8 values
-                if (++j == 4 * max) {
-                    return j;
-                }
+        (*pix1)[j] = x;
+        (*pix2)[j] = y;
 
-            }
-
-            i = 0;
-
-        } else if (i < 20) {
-            buffer[i++] = c;
+        if (++j == 4 * max) {
+            return j;
         }
     }
 
@@ -68,35 +59,29 @@ int read_pixels(FILE *fr, pixel *pix1, pixel *pix2, int max)
 
 int main(int argc, char **argv)
 {
+    FILE *fr;
+    intptr_t i_pix1;
+    intptr_t i_pix2;
+    pixel *pix1;
+    pixel *pix2;
+    int j, f;
 
     if (argc < 2) {
         help(argv);
         return 1;
     }
 
-    FILE *fr = fopen(argv[1], "r");
+    fr = fopen(argv[1], "r");
 
-    intptr_t i_pix1;
-    intptr_t i_pix2;
-    int x, y, j, i;
+    while ((j = read_pixels(fr, &i_pix1, &pix1, &i_pix2, &pix2)) != 0) {
 
-    fscanf(fr, "%d,%d", &x, &y);
+        f = x264_pixel_satd_8x4(pix1, i_pix1, pix2, i_pix2);
+        printf("satd = %d\n", f);
 
-    i_pix1 = (int) x;
-    i_pix2 = (int) y;
-    int max = y > x ? y : x;
+        free(pix1);
+        free(pix2);
 
-    pixel *pix1 = (pixel*) malloc(4 * max * sizeof(pixel));
-    pixel *pix2 = (pixel*) malloc(4 * max * sizeof(pixel));
-
-    while ((j = read_pixels(fr, pix1, pix2, max)) != 0) {
-        for (i = 0; i < max * 4; i++) {
-            printf("%d %d\n", pix1[i], pix2[i]);
-        }
     }
-
-    int f = x264_pixel_satd_8x4(pix1, i_pix1, pix2, i_pix2);
-    printf("satd = %d\n", f);
 
     fclose(fr);
 
