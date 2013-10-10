@@ -54,6 +54,9 @@ int read_pixels(FILE *fr, intptr_t *i_pix1, pixel **pix1, intptr_t *i_pix2, pixe
         }
     }
 
+    free(*pix1);
+    free(*pix2);
+
     return 0;
 }
 
@@ -80,7 +83,6 @@ int main(int argc, char **argv)
 
         free(pix1);
         free(pix2);
-
     }
 
     fclose(fr);
