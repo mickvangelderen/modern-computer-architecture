@@ -28,7 +28,7 @@ void help(char **argv)
     printf("Usage: %s <file>\n", argv[0]);
 }
 
-int read_pixels(FILE *fr, pixel *pix1, intptr_t *i_pix1, pixel *pix2, intptr_t *i_pix2)
+int read_pixels(FILE *fr, pixel *pix1, pixel *pix2, int max)
 {
     int w, v, x, y;
 
@@ -39,27 +39,31 @@ int read_pixels(FILE *fr, pixel *pix1, intptr_t *i_pix1, pixel *pix2, intptr_t *
 
     while ((c = getc(fr)) != EOF) {
         if (c == '\n') {
-            i = 0;
 
-            sscanf(buffer, "(%d,%d)  %d %d", &w, &v, &x, &y);
+            buffer[i] = '\0';
 
-            (*i_pix1) = (intptr_t) w;
-            (*i_pix2) = (intptr_t) v;
+            if (i > 1) { // skip empty lines
 
-            pix1[j] = x;
-            pix2[j] = y;
+                sscanf(buffer, "%d,%d", &x, &y);
 
-            // stop after 4*8 values
-            if (++j == 8 * 4) {
-                return 0;
+                pix1[j] = x;
+                pix2[j] = y;
+
+                // stop after 4*8 values
+                if (++j == 4 * max) {
+                    return j;
+                }
+
             }
+
+            i = 0;
 
         } else if (i < 20) {
             buffer[i++] = c;
         }
     }
 
-    return EOF;
+    return 0;
 }
 
 int main(int argc, char **argv)
@@ -72,17 +76,27 @@ int main(int argc, char **argv)
 
     FILE *fr = fopen(argv[1], "r");
 
-    pixel *pix1 = (pixel*) malloc(4 * 8 * sizeof(pixel));
     intptr_t i_pix1;
-    pixel *pix2 = (pixel*) malloc(4 * 8 * sizeof(pixel));
     intptr_t i_pix2;
+    int x, y, j, i;
 
-    while (read_pixels(fr, pix1, &i_pix1, pix2, &i_pix2) != EOF) {
-        printf("%d %d %d %d\n", (int) i_pix1, (int) i_pix2, pix1[0], pix2[0]);
+    fscanf(fr, "%d,%d", &x, &y);
+
+    i_pix1 = (int) x;
+    i_pix2 = (int) y;
+    int max = y > x ? y : x;
+
+    pixel *pix1 = (pixel*) malloc(4 * max * sizeof(pixel));
+    pixel *pix2 = (pixel*) malloc(4 * max * sizeof(pixel));
+
+    while ((j = read_pixels(fr, pix1, pix2, max)) != 0) {
+        for (i = 0; i < max * 4; i++) {
+            printf("%d %d\n", pix1[i], pix2[i]);
+        }
     }
 
-    int y = x264_pixel_satd_8x4(pix1, i_pix1, pix2, i_pix2);
-    printf("satd = %d\n", y);
+    int f = x264_pixel_satd_8x4(pix1, i_pix1, pix2, i_pix2);
+    printf("satd = %d\n", f);
 
     fclose(fr);
 
