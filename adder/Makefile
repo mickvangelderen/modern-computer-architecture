@@ -1,8 +1,20 @@
+CC := gcc
+CFLAGS := -std=gnu99 -m32
+CFLAGSSB2 := -std=gnu99 -DWORDS_BIGENDIAN
+SOURCEDIR := src/
+BUILDDIR :=  build/
+BINDIR := bin/
 
-CFLAGS := -std=gnu99 -I. -I./x264 -I./x264/common -I./x264_config
-
+.PHONY: main
 main: src
-	gcc src/main.c -o dist/adder $(CFLAGS)
+	$(CC) $(SOURCEDIR)main.c -o $(BINDIR)adder $(CFLAGS)
 
+.PHONY: clean
 clean:
-	rm -rf build/* dist/*
+	rm -rf $(BUILDDIR)* $(BINDIR)*
+
+# Build for microblaze
+
+.PHONY: microblaze
+microblaze: src
+	sb2 $(CC) $(SOURCEDIR)main.c -o $(BINDIR)adder $(CFLAGSSB2)
