@@ -39,31 +39,46 @@ int main(int argc, char **argv) {
 	unsigned char RVEX_CLEAR = 2;
 	unsigned char RVEX_START = 1;
 
-	int fd;
 	unsigned char status = 0;
 
-	char data[] = {0,1,2,3,4,5,6,7};
+	char data[] = {0x05,0,0,0,0x03,0,0,0};
 
 	// Write some data to memory
-	fd = myopen(RVEX_DATA_MEMORY_FILE, O_WRONLY);
-	if (fd < 0) { return -1; }
-	write(fd, data, 8);
-	close(fd);
-	printf("Wrote {0,1,2,3,4,5,6,7} to \"%s\"\n", RVEX_DATA_MEMORY_FILE);
+	printf("Opening files...\n");
+	int fd_instr = myopen(RVEX_INSTRUCTION_MEMORY_FILE, O_WRONLY);
+	int fd_mem = myopen(RVEX_DATA_MEMORY_FILE, O_RDWR);
+	int fd_ctl = myopen(RVEX_CORE_CTL_FILE, O_WRONLY);
+	int fd_stat = myopen(RVEX_CORE_STATUS_FILE, O_RDONLY);
+	FILE * f_bytecode = fopen("bytecode-11", "rb");
+
+	char buffer[64];
+	size_t num_read;
+
+	if (fd_instr < 0 || fd_mem < 0 || fd_ctl < 0 || fd_stat < 0 || f_bytecode == NULL) {
+		return -1;
+	}
+
+	while((num_read = fread(buffer, sizeof(char), 64, f_bytecode)) != 0) {
+		write(fd_instr, buffer, num_read);
+		printf("Wrote %d bytes to instruction memory\n", (int) num_read);
+	}
+
+	write(fd_mem, data, 8);
+	printf("Wrote to \"%s\"\n", RVEX_DATA_MEMORY_FILE);
 
 	// Clear status and start procedure
-	fd = myopen(RVEX_CORE_CTL_FILE, O_WRONLY);
-	if (fd < 0) { return -1; }
-	write(fd, &RVEX_CLEAR, 1);
-	write(fd, &RVEX_START, 1);
-	close(fd);
+	write(fd_ctl, &RVEX_CLEAR, 1);
+	write(fd_ctl, &RVEX_START, 1);
 	printf("Wrote clear and start to \"%s\"\n", RVEX_CORE_CTL_FILE);
+	
+	lseek(fd_mem, 8, SEEK_SET);
+	read(fd_mem, &status, 1);
+	printf("The result of 0x05 + 0x03 is %d\n", status);
 
-	fd = myopen(RVEX_CORE_STATUS_FILE, O_RDONLY);
-	if (fd < 0) { return -1; }
-	read(fd, &status, 1);
-	close(fd);
-	printf("Rvex_core_status is %d\n", status);
+	close(fd_mem);
+	close(fd_ctl);
+	close(fd_stat);
+	close(fd_instr);
 
 	return 0;
 }
