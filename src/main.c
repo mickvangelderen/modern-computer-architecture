@@ -37,7 +37,7 @@ int read_pixels(FILE *fr, intptr_t *i_pix1, pixel **pix1, intptr_t *i_pix2, pixe
     (*i_pix1) = (intptr_t) x;
     (*i_pix2) = (intptr_t) y;
 
-    max = y > x ? y : x;
+    max = x > y ? x : y;
 
     (*pix1) = (pixel*) malloc(4 * max * sizeof(pixel));
     (*pix2) = (pixel*) malloc(4 * max * sizeof(pixel));
