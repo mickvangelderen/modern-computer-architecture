@@ -8,7 +8,6 @@
 # make clean - deletes object files and executable
 # make clean-hard - deletes the build folder and the target folder
 # make run - runs the executable
-# make sb2 - creates the executable with sb2 flags and environment
 # make debug - prints some processed config variables
 # make debug-VARIABLE_NAME - prints $(VARIABLE_NAME)
 #
@@ -16,15 +15,15 @@
 # ------------
 # Config start
 # ------------
-TARGET_NAME := adder					# Name of the executable that is generated. 
+TARGET_NAME := bin2c					# Name of the executable that is generated. 
 SOURCE_FOLDER := src/					# Single folder in which source files are placed, is not searched recursively, may not contain spaces. 
 INCLUDE_FOLDER := $(SOURCE_FOLDER)		# Single folder that gets added to the compiler path via -I, may not contain spaces. 
 BUILD_FOLDER := build/					# Single folder in which intermediate compilation results will be put, may not contain spaces. 
 TARGET_FOLDER := bin/					# Single folder in which the output file of the compilation will be put, may not contain spaces. 
 COMPILER := gcc							# The compiler. 
 COMPILER_FLAGS := -Wall -std=gnu99		# Compiler flags for the object compilation step. 
-COMPILER_FLAGS_SB2 := -Wall -std=gnu99 -DWORDS_BIGENDIAN		# Compiler flags for the object compilation step. 
 LINKER_FLAGS := 						# Compiler flags for the link step. 
+RUN_ARGUMENTS := data/bytecode-adder data/bytecode-adder.c # Arguments that have to be passed to the application when using make run
 # ---------------------
 # End of config section
 # ---------------------
@@ -39,6 +38,7 @@ COMPILER := $(strip $(COMPILER))
 COMPILER_FLAGS := $(strip $(COMPILER_FLAGS))
 COMPILER_FLAGS_SB2 := $(strip $(COMPILER_FLAGS_SB2))
 LINKER_FLAGS := $(strip $(LINKER_FLAGS))
+RUN_ARGUMENTS := $(strip $(RUN_ARGUMENTS))
 
 # Strip trailing slash
 SOURCE_FOLDER := $(SOURCE_FOLDER:%/=%)
@@ -106,11 +106,7 @@ clean-hard:
 
 .PHONY: run
 run: $(TARGET)
-	@$(TARGET)
-
-.PHONY: sb2
-sb2: $(TARGET_FOLDER)
-	sb2 $(COMPILER) $(COMPILER_FLAGS_SB2) -I"$(INCLUDE_FOLDER)" -o $(TARGET) $(SOURCE_FILES)
+	@$(TARGET) $(RUN_ARGUMENTS)
 
 BLACK := \033[0;30m
 BLACKBOLD := \033[1;30m
