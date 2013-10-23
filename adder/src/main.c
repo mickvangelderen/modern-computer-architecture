@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 #include "rovex.h"
-#include "bytecodes/add.h"
+#include "adder.h"
 
 int main(int argc, char **argv) {
 

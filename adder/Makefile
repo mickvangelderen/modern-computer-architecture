@@ -1,7 +1,7 @@
 #
 # Simple 2-step compilation Makefile by Mick van Gelderen
 #
-# Note that make does not support file paths with spaces. 
+# Note that make does not support file paths with spaces.
 #
 # make - builds the target
 # make TARGET_NAME - equivalent to `make`
@@ -16,15 +16,16 @@
 # ------------
 # Config start
 # ------------
-TARGET_NAME := adder					# Name of the executable that is generated. 
-SOURCE_FOLDER := src/					# Single folder in which source files are placed, is not searched recursively, may not contain spaces. 
-INCLUDE_FOLDER := $(SOURCE_FOLDER)		# Single folder that gets added to the compiler path via -I, may not contain spaces. 
-BUILD_FOLDER := build/					# Single folder in which intermediate compilation results will be put, may not contain spaces. 
-TARGET_FOLDER := bin/					# Single folder in which the output file of the compilation will be put, may not contain spaces. 
-COMPILER := gcc							# The compiler. 
-COMPILER_FLAGS := -Wall -std=gnu99		# Compiler flags for the object compilation step. 
-COMPILER_FLAGS_SB2 := -Wall -std=gnu99 -DWORDS_BIGENDIAN		# Compiler flags for the object compilation step. 
-LINKER_FLAGS := 						# Compiler flags for the link step. 
+TARGET_NAME := adder					# Name of the executable that is generated.
+SOURCE_FOLDER := src/					# Single folder in which source files are placed, is not searched recursively, may not contain spaces.
+BYTECODES_FOLDER := bytecodes/headers	# Folder with bytecode programs
+INCLUDE_FOLDER := $(SOURCE_FOLDER)		# Single folder that gets added to the compiler path via -I, may not contain spaces.
+BUILD_FOLDER := build/					# Single folder in which intermediate compilation results will be put, may not contain spaces.
+TARGET_FOLDER := bin/					# Single folder in which the output file of the compilation will be put, may not contain spaces.
+COMPILER := gcc							# The compiler.
+COMPILER_FLAGS := -Wall -std=gnu99		# Compiler flags for the object compilation step.
+COMPILER_FLAGS_SB2 := -Wall -std=gnu99 -DWORDS_BIGENDIAN		# Compiler flags for the object compilation step.
+LINKER_FLAGS := 						# Compiler flags for the link step.
 # ---------------------
 # End of config section
 # ---------------------
@@ -32,6 +33,7 @@ LINKER_FLAGS := 						# Compiler flags for the link step.
 # Strip whitespace
 TARGET_NAME := $(strip $(TARGET_NAME))
 SOURCE_FOLDER := $(strip $(SOURCE_FOLDER))
+BYTECODES_FOLDER := $(strip $(BYTECODES_FOLDER))
 INCLUDE_FOLDER := $(strip $(INCLUDE_FOLDER))
 BUILD_FOLDER := $(strip $(BUILD_FOLDER))
 TARGET_FOLDER := $(strip $(TARGET_FOLDER))
@@ -42,6 +44,7 @@ LINKER_FLAGS := $(strip $(LINKER_FLAGS))
 
 # Strip trailing slash
 SOURCE_FOLDER := $(SOURCE_FOLDER:%/=%)
+BYTECODES_FOLDER := $(BYTECODES_FOLDER:%/=%)
 INCLUDE_FOLDER := $(INCLUDE_FOLDER:%/=%)
 BUILD_FOLDER := $(BUILD_FOLDER:%/=%)
 TARGET_FOLDER := $(TARGET_FOLDER:%/=%)
@@ -53,6 +56,10 @@ endif
 ifeq ($(SOURCE_FOLDER),)
 $(warning $$(SOURCE_FOLDER) defaulted to ".")
 SOURCE_FOLDER := .
+endif
+ifeq ($(BYTECODES_FOLDER),)
+$(warning $$(BYTECODES_FOLDER) defaulted to ".")
+BYTECODES_FOLDER := .
 endif
 ifeq ($(INCLUDE_FOLDER),)
 $(warning $$(INCLUDE_FOLDER) defaulted to ".")
@@ -90,7 +97,7 @@ $(TARGET): $(OBJECT_FILES) | $(TARGET_FOLDER)
 
 # Compile c files into object files
 $(BUILD_FOLDER)/%.o: $(SOURCE_FOLDER)/%.c $(HEADER_FILES) | $(BUILD_FOLDER)
-	$(COMPILER) $(COMPILER_FLAGS) -c -I"$(INCLUDE_FOLDER)" -o $@ $<
+	$(COMPILER) $(COMPILER_FLAGS) -c -I"$(INCLUDE_FOLDER)" -I"$(BYTECODES_FOLDER)" -o $@ $<
 
 # Create directories if they are needed
 $(TARGET_FOLDER) $(BUILD_FOLDER):
@@ -132,7 +139,7 @@ ENDCOLOR := \033[m
 
 debug_print_var = $(BLUEBOLD)$$($(ENDCOLOR)$1$(BLUEBOLD)) =$(ENDCOLOR) $($1)
 
-.PHONY: debug 
+.PHONY: debug
 debug:
 	@echo -e '$(YELLOWBOLD)Folders$(BLUEBOLD):$(ENDCOLOR)'
 	@echo -e '	$(call debug_print_var,SOURCE_FOLDER)'
