@@ -66,7 +66,7 @@ int main(int argc, char **argv) {
 		}
 	}
 	fseek(outputFile, -1, SEEK_CUR);
-	sprintf(buffer, "\n};");
+	sprintf(buffer, "\n};\n");
 	fwrite(buffer, sizeof(char), strlen(buffer), outputFile);
 
 	fclose(inputFile);
