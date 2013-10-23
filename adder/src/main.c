@@ -15,7 +15,7 @@ const char * const RVEX_INSTRUCTION_MEMORY_FILE = "/dev/rvex-imemory.0";
 const size_t BUFFER_SIZE = 1024;
 char buffer[1024];
 
-// generated with ../bin2c/bin/bin2c 
+// generated with ../bin2c/bin/bin2c
 char bytecode[] = {
 	0x00,0x00,0x82,0xC5,0x20,0x00,0x00,0xC2,0x00,0x00,0x00,0xC0,0x00,0x00,0x00,0xC0,
 	0x40,0x00,0x00,0x44,0x00,0x00,0x00,0xC0,0x00,0x00,0x00,0xC0,0x00,0x00,0x00,0xC0,
@@ -28,7 +28,7 @@ char bytecode[] = {
 	0x00,0x00,0x00,0x4C,0x00,0x00,0x00,0xC0,0x50,0x02,0x84,0x2B,0x00,0x00,0x00,0xC2
 };
 
-// works like open(const char * path, int oflag, ...) but only supports path and flag parameters. Prints errors if any. 
+// works like open(const char * path, int oflag, ...) but only supports path and flag parameters. Prints errors if any.
 int myopen(const char * path, int oflag) {
 	// Ints to save errno and file descriptor
 	int e, fd;
@@ -77,7 +77,7 @@ FILE * myfopen(const char * path, const char * mode) {
 	(((d) & 0x00ff) << 8)
 
 int main(int argc, char **argv) {
-	
+
 	const unsigned char RVEX_CLEAR = '2';
 	const unsigned char RVEX_START = '1';
 	unsigned char status;
@@ -100,7 +100,7 @@ int main(int argc, char **argv) {
 	int fd_mem = myopen(RVEX_DATA_MEMORY_FILE, O_RDWR);
 	int fd_ctl = myopen(RVEX_CORE_CTL_FILE, O_WRONLY);
 	int fd_stat = myopen(RVEX_CORE_STATUS_FILE, O_RDONLY);
-	
+
 	// size_t num_read;
 
 	if (fd_instr < 0 || fd_mem < 0 || fd_ctl < 0 || fd_stat < 0) { // || f_bytecode == NULL) {
@@ -126,7 +126,7 @@ int main(int argc, char **argv) {
 	write(fd_ctl, &RVEX_CLEAR, sizeof(unsigned char));
 	write(fd_ctl, &RVEX_START, sizeof(unsigned char));
 	printf("Wrote clear and start to \"%s\"\n", RVEX_CORE_CTL_FILE);
-	
+
 	do {
 		read(fd_stat, &status, sizeof(unsigned char));
 		printf("Status %d", status);

@@ -30,7 +30,7 @@ FILE * myfopen(const char * path, const char * mode) {
 }
 
 int main(int argc, char **argv) {
-	
+
 	if (argc != 3) {
 		printf("Use like this: `%s if of` where if is the path to a binary file and of will contain the output\n", argv[0]);
 		return -1;
@@ -52,12 +52,12 @@ int main(int argc, char **argv) {
 		return -1;
 	}
 
-	sprintf(buffer, "char bytedata[] = {");
+	sprintf(buffer, "char bytecode[] = {");
 	fwrite(buffer, sizeof(char), strlen(buffer), outputFile);
-	while((numBytesRead = fread(buffer, sizeof(char), BUFFER_SIZE, inputFile)) != 0) {
-		printf("Read %d bytes...\n", numBytesRead);
-		for(i = 0; i < numBytesRead; i++) {
-			if((i%16) == 0) {
+	while ((numBytesRead = fread(buffer, sizeof(char), BUFFER_SIZE, inputFile)) != 0) {
+		printf("Read %d bytes...\n", (int) numBytesRead);
+		for (i = 0; i < numBytesRead; i++) {
+			if ((i % 16) == 0) {
 				sprintf(hexBuffer, "\n\t");
 				fwrite(hexBuffer, sizeof(char), 2, outputFile);
 			}
