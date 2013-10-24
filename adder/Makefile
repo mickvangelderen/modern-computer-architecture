@@ -16,7 +16,7 @@
 # ------------
 # Config start
 # ------------
-TARGET_NAME := adder					# Name of the executable that is generated.
+EXECUTABLE_NAMES := adder sum
 SOURCE_FOLDER := src/					# Single folder in which source files are placed, is not searched recursively, may not contain spaces.
 BYTECODES_FOLDER := bytecodes/headers	# Folder with bytecode programs
 INCLUDE_FOLDER := $(SOURCE_FOLDER)		# Single folder that gets added to the compiler path via -I, may not contain spaces.
@@ -31,7 +31,6 @@ LINKER_FLAGS := 						# Compiler flags for the link step.
 # ---------------------
 
 # Strip whitespace
-TARGET_NAME := $(strip $(TARGET_NAME))
 SOURCE_FOLDER := $(strip $(SOURCE_FOLDER))
 BYTECODES_FOLDER := $(strip $(BYTECODES_FOLDER))
 INCLUDE_FOLDER := $(strip $(INCLUDE_FOLDER))
@@ -50,9 +49,6 @@ BUILD_FOLDER := $(BUILD_FOLDER:%/=%)
 TARGET_FOLDER := $(TARGET_FOLDER:%/=%)
 
 # Sanity checks
-ifeq ($(TARGET_NAME),)
-$(error Cannot continue: $$(TARGET_NAME) is empty. You have to define a target name.)
-endif
 ifeq ($(SOURCE_FOLDER),)
 $(warning $$(SOURCE_FOLDER) defaulted to ".")
 SOURCE_FOLDER := .
@@ -83,21 +79,19 @@ SOURCE_FILES := $(wildcard $(SOURCE_FOLDER)/*.c)
 HEADER_FILES := $(wildcard $(INCLUDE_FOLDER)/*.h)
 # Replace the source folder prefix in the source files with the build folder and replace the .c suffix by .o
 OBJECT_FILES := $(SOURCE_FILES:$(SOURCE_FOLDER)/%.c=$(BUILD_FOLDER)/%.o)
-# Relative path to the actual target file
-TARGET := $(TARGET_FOLDER)/$(TARGET_NAME)
+# Relative path to the actual target files
+EXECUTABLES := $(EXECUTABLE_NAMES:%=$(TARGET_FOLDER)/%)
 # Get the working directory
 PROJECT_FOLDER := $(shell pwd)
 
-.PHONY: $(TARGET_NAME)
-$(TARGET_NAME): $(SOURCE_FILES) $(TARGET)
+all: $(EXECUTABLES)
 
-# Link object files into target file
-$(TARGET): $(OBJECT_FILES) | $(TARGET_FOLDER)
-	$(COMPILER) $(LINKER_FLAGS) -o $@ $(OBJECT_FILES)
+$(TARGET_FOLDER)/%: $(OBJECT_FILES) | $(TARGET_FOLDER)
+	sb2 $(COMPILER) $(LINKER_FLAGS) -o $@ $< build/rovex.o
 
 # Compile c files into object files
 $(BUILD_FOLDER)/%.o: $(SOURCE_FOLDER)/%.c $(HEADER_FILES) | $(BUILD_FOLDER)
-	$(COMPILER) $(COMPILER_FLAGS) -c -I"$(INCLUDE_FOLDER)" -I"$(BYTECODES_FOLDER)" -o $@ $<
+	sb2 $(COMPILER) $(COMPILER_FLAGS) -c -I"$(INCLUDE_FOLDER)" -I"$(BYTECODES_FOLDER)" -o $@ $<
 
 # Create directories if they are needed
 $(TARGET_FOLDER) $(BUILD_FOLDER):
@@ -105,19 +99,11 @@ $(TARGET_FOLDER) $(BUILD_FOLDER):
 
 .PHONY: clean
 clean:
-	-rm $(OBJECT_FILES) $(TARGET)
+	rm $(OBJECT_FILES) $(EXECUTABLES)
 
 .PHONY: clean-hard
 clean-hard:
-	-rm -r $(BUILD_FOLDER) $(TARGET_FOLDER)
-
-.PHONY: run
-run: $(TARGET)
-	@$(TARGET)
-
-.PHONY: sb2
-sb2: $(TARGET_FOLDER)
-	sb2 $(COMPILER) $(COMPILER_FLAGS_SB2) -I"$(INCLUDE_FOLDER)" -o $(TARGET) $(SOURCE_FILES)
+	rm -r $(BUILD_FOLDER) $(TARGET_FOLDER)
 
 BLACK := \033[0;30m
 BLACKBOLD := \033[1;30m
@@ -147,11 +133,12 @@ debug:
 	@echo -e '	$(call debug_print_var,BUILD_FOLDER)'
 	@echo -e '	$(call debug_print_var,TARGET_FOLDER)'
 	@echo -e '	$(call debug_print_var,PROJECT_FOLDER)'
+	@echo -e '	$(call debug_print_var,TARGET_FOLDER)'
 	@echo -e '$(YELLOWBOLD)Files$(BLUEBOLD):$(ENDCOLOR)'
 	@echo -e '	$(call debug_print_var,SOURCE_FILES)'
 	@echo -e '	$(call debug_print_var,HEADER_FILES)'
 	@echo -e '	$(call debug_print_var,OBJECT_FILES)'
-	@echo -e '	$(call debug_print_var,TARGET)'
+	@echo -e '	$(call debug_print_var,EXECUTABLES)'
 
 .PHONY: debug-%
 debug-%:

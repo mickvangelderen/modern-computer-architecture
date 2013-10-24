@@ -10,12 +10,15 @@ SRCDIR = ./src
 PWD = $(shell pwd)
 
 EXECUTABLES = sum adder
+HEADERS = $(EXECUTABLES:%=headers/%.h)
 
 .SUFFIXES:
 .PRECIOUS: %.o %.s
 
 .PHONY: all
 all: $(EXECUTABLES)
+
+headers: $(HEADERS)
 
 headers/%.h: byte-%
 	../../bin2c/bin/bin2c bytecode $@
