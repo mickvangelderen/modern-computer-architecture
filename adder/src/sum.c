@@ -2,7 +2,14 @@
 #include <stdlib.h>
 
 #include "rovex.h"
-#include "adder.h"
+#include "sum.h"
+
+int printIntArray(int numbers[], int length) {
+	int i;
+	for (i = 0; i < length; i++) {
+		printf("%d%c", numbers[i], i == (length - 1) ? '\n' : ',');
+	}
+}
 
 int main(int argc, char **argv) {
 
@@ -11,16 +18,29 @@ int main(int argc, char **argv) {
 
 	unsigned char status;
 
-	if (argc != 3) {
-		printf("Use like this: `%s a b` where a and b are integers\n", argv[0]);
-		return -1;
+	int * numbers;
+	int l = argc - 1;
+	int i;
+
+	numbers = (int*) malloc(l * sizeof(int));
+
+	for (i = 1; i < argc; i++) {
+		numbers[i - 1] = atoi(argv[i]);
 	}
 
-	int a = atoi(argv[1]);
-	int b = atoi(argv[2]);
+	printf("using these numbers\n");
+	printIntArray(numbers, l);
+
+	for (i = 0; i < l; i++) {
+		numbers[i] = changeEndianess32(numbers[i]);
+	}
+
+	printf("using these numbers, changed endianess\n");
+	printIntArray(numbers, l);
+
+	printf("%d %d\n", (int) sizeof(int), (int) sizeof(char));
+
 	int result;
-	a = changeEndianess32(a);
-	b = changeEndianess32(b);
 
 	// Write some data to memory
 	printf("Opening files...\n");
@@ -37,10 +57,10 @@ int main(int argc, char **argv) {
 	// Incorporated the bytecode into the executable ;D
 	write(fd_instr, bytecode, sizeof(bytecode));
 
-	write(fd_mem, &a, sizeof(int));
-	write(fd_mem, &b, sizeof(int));
-	printf("Wrote 0x%08X offset 0 to \"%s\"\n", a, RVEX_DATA_MEMORY_FILE);
-	printf("Wrote 0x%08X offset 4 to \"%s\"\n", b, RVEX_DATA_MEMORY_FILE);
+	// write data
+	write(fd_mem, numbers, l * sizeof(int));
+	printf("Wrote this that to \"%s\"\n", RVEX_DATA_MEMORY_FILE);
+	printIntArray(numbers, l);
 
 	// Clear status and start procedure
 	write(fd_ctl, &RVEX_CLEAR, sizeof(unsigned char));
@@ -52,7 +72,7 @@ int main(int argc, char **argv) {
 		printf("Status %d", status);
 	} while (status != '3');
 
-	lseek(fd_mem, 2*sizeof(int), SEEK_SET);
+	lseek(fd_mem, 2 * sizeof(int), SEEK_SET);
 	read(fd_mem, &result, sizeof(int));
 
 	close(fd_mem);
@@ -62,7 +82,7 @@ int main(int argc, char **argv) {
 
 	printf("Operation executed\n");
 	printf("Read 0x%08X offset 8 from \"%s\"\n", result, RVEX_DATA_MEMORY_FILE);
-	printf("The result of %d + %d is %d\n", changeEndianess32(a), changeEndianess32(b), changeEndianess32(result));
+	printf("The result is %d\n", changeEndianess32(result));
 
 	return 0;
 }

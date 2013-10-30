@@ -6,7 +6,6 @@
 # make - builds the target
 # make TARGET_NAME - equivalent to `make`
 # make clean - deletes object files and executable
-# make clean-hard - deletes the build folder and the target folder
 # make run - runs the executable
 # make sb2 - creates the executable with sb2 flags and environment
 # make debug - prints some processed config variables
@@ -86,12 +85,8 @@ PROJECT_FOLDER := $(shell pwd)
 
 all: $(EXECUTABLES)
 
-$(TARGET_FOLDER)/%: $(OBJECT_FILES) | $(TARGET_FOLDER)
-	sb2 $(COMPILER) $(LINKER_FLAGS) -o $@ $< build/rovex.o
-
-# Compile c files into object files
-$(BUILD_FOLDER)/%.o: $(SOURCE_FOLDER)/%.c $(HEADER_FILES) | $(BUILD_FOLDER)
-	sb2 $(COMPILER) $(COMPILER_FLAGS) -c -I"$(INCLUDE_FOLDER)" -I"$(BYTECODES_FOLDER)" -o $@ $<
+$(TARGET_FOLDER)/%: $(SOURCE_FOLDER)/%.c $(HEADER_FILES) | $(BUILD_FOLDER)
+	sb2 $(COMPILER) $(LINKER_FLAGS) -I"$(INCLUDE_FOLDER)" -I"$(BYTECODES_FOLDER)" -o $@ $< src/rovex.c
 
 # Create directories if they are needed
 $(TARGET_FOLDER) $(BUILD_FOLDER):
@@ -99,11 +94,7 @@ $(TARGET_FOLDER) $(BUILD_FOLDER):
 
 .PHONY: clean
 clean:
-	rm $(OBJECT_FILES) $(EXECUTABLES)
-
-.PHONY: clean-hard
-clean-hard:
-	rm -r $(BUILD_FOLDER) $(TARGET_FOLDER)
+	rm -rf $(OBJECT_FILES) $(EXECUTABLES)
 
 BLACK := \033[0;30m
 BLACKBOLD := \033[1;30m
