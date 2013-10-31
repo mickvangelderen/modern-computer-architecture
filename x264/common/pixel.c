@@ -280,6 +280,9 @@ static NOINLINE int x264_pixel_satd_4x4( pixel *pix1, intptr_t i_pix1, pixel *pi
 
 static NOINLINE int x264_pixel_satd_8x4( pixel *pix1, intptr_t i_pix1, pixel *pix2, intptr_t i_pix2 )
 {
+
+    rvexSeek(0);
+
     for (int i = 0; i < 4; i++, pix1 += i_pix1) {
         rvexWrite(pix1, 8 * sizeof(pixel));
     }
@@ -290,8 +293,10 @@ static NOINLINE int x264_pixel_satd_8x4( pixel *pix1, intptr_t i_pix1, pixel *pi
 
     rvexGo();
 
+    rvexSeek(64 * sizeof(pixel));
+
     int result;
-    rvexRead(64*sizeof(pixel), &result, sizeof(int));
+    rvexRead(&result, sizeof(int));
 
     return result;
 /*

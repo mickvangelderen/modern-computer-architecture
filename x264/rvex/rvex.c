@@ -69,12 +69,15 @@ void rvexDeInit() {
 	close(fd_instr);
 }
 
-ssize_t rvexWrite(const void *buf, size_t count) {
-	return write(fd_mem, buf, count);	
+int rvexSeek(int offset) {
+	return lseek(fd_mem, offset, SEEK_SET);
 }
 
-ssize_t rvexRead(off_t offset, void *buf, size_t count) {
-	lseek(fd_mem, offset, SEEK_SET);
+ssize_t rvexWrite(const void *buf, size_t count) {
+	return write(fd_mem, buf, count);
+}
+
+ssize_t rvexRead(void *buf, size_t count) {
 	return read(fd_mem, buf, count);
 }
 
