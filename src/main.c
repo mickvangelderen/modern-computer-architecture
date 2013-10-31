@@ -23,6 +23,21 @@ static NOINLINE int x264_pixel_satd_8x4( pixel *pix1, intptr_t i_pix1, pixel *pi
     return (((sum_t)sum) + (sum>>BITS_PER_SUM)) >> 1;
 }
 
+int intermediate_pixel_satd_8x4( pixel *pix1, intptr_t i_pix1, pixel *pix2, intptr_t i_pix2 )
+{
+    pixel tmp_pix1[4 * 8];
+    pixel tmp_pix2[4 * 8];
+
+    for (int i = 0, j = 0; i < 4; i++, pix1 += i_pix1, pix2 += i_pix2, j += 8) {
+        for (int k = 0; k < 8; k++) {
+            tmp_pix1[j + k] = pix1[k];
+            tmp_pix2[j + k] = pix2[k];
+        }
+    }
+
+    return x264_pixel_satd_8x4(tmp_pix1, 8, tmp_pix2, 8);
+}
+
 void help(char **argv)
 {
     printf("Usage: %s <file>\n", argv[0]);
@@ -78,7 +93,7 @@ int main(int argc, char **argv)
 
     while ((j = read_pixels(fr, &i_pix1, &pix1, &i_pix2, &pix2)) != 0) {
 
-        f = x264_pixel_satd_8x4(pix1, i_pix1, pix2, i_pix2);
+        f = intermediate_pixel_satd_8x4(pix1, i_pix1, pix2, i_pix2);
         printf("satd = %d\n", f);
 
         free(pix1);
