@@ -10,8 +10,11 @@ int rvexInit();
 // Closes files
 void rvexDeInit();
 
-// Write to rvex memory
+// Write to rvex data memory
 ssize_t rvexWrite(const void *buf, size_t count);
+
+// Read from rvex data memory
+ssize_t rvexRead(off_t offset, void *buf, size_t count);
 
 // Writes clear and start to rvex and returns when the computation is done
 void rvexGo();

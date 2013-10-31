@@ -73,6 +73,11 @@ ssize_t rvexWrite(const void *buf, size_t count) {
 	return write(fd_mem, buf, count);	
 }
 
+ssize_t rvexRead(off_t offset, void *buf, size_t count) {
+	lseek(fd_mem, offset, SEEK_SET);
+	return read(fd_mem, buf, count);
+}
+
 void rvexGo() {
 	write(fd_ctl, &RVEX_CLEAR, sizeof(unsigned char));
 	write(fd_ctl, &RVEX_START, sizeof(unsigned char));

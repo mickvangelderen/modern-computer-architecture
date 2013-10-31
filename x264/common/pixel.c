@@ -41,6 +41,7 @@
 #   include "sparc/pixel.h"
 #endif
 
+#include "rvex/rvex.h"
 
 /****************************************************************************
  * pixel_sad_WxH
@@ -279,6 +280,21 @@ static NOINLINE int x264_pixel_satd_4x4( pixel *pix1, intptr_t i_pix1, pixel *pi
 
 static NOINLINE int x264_pixel_satd_8x4( pixel *pix1, intptr_t i_pix1, pixel *pix2, intptr_t i_pix2 )
 {
+    for (int i = 0; i < 4; i++, pix1 += i_pix1) {
+        rvexWrite(pix1, 8 * sizeof(pixel));
+    }
+
+    for (int i = 0; i < 4; i++, pix2 += i_pix2) {
+        rvexWrite(pix2, 8 * sizeof(pixel));
+    }
+
+    rvexGo();
+
+    int result;
+    rvexRead(64*sizeof(pixel), &result, sizeof(int));
+
+    return result;
+/*
     sum2_t tmp[4][4];
     sum2_t a0, a1, a2, a3;
     sum2_t sum = 0;
@@ -295,7 +311,7 @@ static NOINLINE int x264_pixel_satd_8x4( pixel *pix1, intptr_t i_pix1, pixel *pi
         HADAMARD4( a0, a1, a2, a3, tmp[0][i], tmp[1][i], tmp[2][i], tmp[3][i] );
         sum += abs2(a0) + abs2(a1) + abs2(a2) + abs2(a3);
     }
-    return (((sum_t)sum) + (sum>>BITS_PER_SUM)) >> 1;
+    return (((sum_t)sum) + (sum>>BITS_PER_SUM)) >> 1;*/
 }
 
 #define PIXEL_SATD_C( w, h, sub )\
