@@ -12,6 +12,12 @@
     typedef uint32_t sum2_t;
 #endif
 
+#if BIT_DEPTH > 8
+    typedef uint16_t pixel;
+#else
+    typedef uint8_t  pixel;
+#endif
+
 #define BITS_PER_SUM (8 * sizeof(sum_t))
 
 #define HADAMARD4(d0, d1, d2, d3, s0, s1, s2, s3) {\

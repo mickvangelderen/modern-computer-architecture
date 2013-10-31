@@ -35,7 +35,8 @@
 #include "input/input.h"
 #include "output/output.h"
 #include "filters/filters.h"
-
+#include "rvex/rvex.h"
+ 
 #define FAIL_IF_ERROR( cond, ... ) FAIL_IF_ERR( cond, "x264", __VA_ARGS__ )
 
 #ifdef _WIN32
@@ -288,6 +289,8 @@ int main( int argc, char **argv )
     /* Restore title; it can be changed by input modules */
     SetConsoleTitle( originalCTitle );
 
+    rvexInit();
+
     /* Control-C handler */
     signal( SIGINT, sigint_handler );
 
@@ -306,6 +309,8 @@ int main( int argc, char **argv )
     if( opt.qpfile )
         fclose( opt.qpfile );
 
+    rvexDeInit();
+    
     SetConsoleTitle( originalCTitle );
 
     return ret;
