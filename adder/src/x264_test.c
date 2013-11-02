@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "bytecodes/x264.h"
 #include "rvex/rvex.h"
 
 typedef signed char        int8_t;
@@ -171,7 +172,7 @@ int main(int argc, char **argv)
     fr = fopen(argv[1], "r");
 
     if (use_vex) {
-        rvexInit();
+        rvexInit(bytecode);
     }
 
     while ((j = read_pixels(fr, &i_pix1, &pix1, &i_pix2, &pix2)) != 0) {

@@ -15,7 +15,7 @@
 # ------------
 # Config start
 # ------------
-EXECUTABLE_NAMES := adder sum x264_test
+EXECUTABLE_NAMES := adder x264_test
 SOURCE_FOLDER := src/					# Single folder in which source files are placed, is not searched recursively, may not contain spaces.
 BYTECODES_FOLDER := bytecodes/headers	# Folder with bytecode programs
 INCLUDE_FOLDER := $(SOURCE_FOLDER)		# Single folder that gets added to the compiler path via -I, may not contain spaces.
@@ -85,13 +85,10 @@ PROJECT_FOLDER := $(shell pwd)
 
 all: $(EXECUTABLES)
 
-$(TARGET_FOLDER)/x264_test: $(SOURCE_FOLDER)/x264_test.c $(HEADER_FILES) | $(BUILD_FOLDER)
-	sb2 $(COMPILER) $(LINKER_FLAGS) -I"$(INCLUDE_FOLDER)" -I../x264 \
+$(TARGET_FOLDER)/%: $(SOURCE_FOLDER)/%.c $(HEADER_FILES) bytecodes
+	sb2 $(COMPILER) $(LINKER_FLAGS) -I"$(INCLUDE_FOLDER)" -Ibytecodes -I../x264 \
 		-o $@ \
 		$< ../x264/rvex/rvex.c
-
-$(TARGET_FOLDER)/%: $(SOURCE_FOLDER)/%.c $(HEADER_FILES) | $(BUILD_FOLDER)
-	sb2 $(COMPILER) $(LINKER_FLAGS) -I"$(INCLUDE_FOLDER)" -I"$(BYTECODES_FOLDER)" -o $@ $< src/rovex.c
 
 # Create directories if they are needed
 $(TARGET_FOLDER) $(BUILD_FOLDER):

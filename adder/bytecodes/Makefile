@@ -10,17 +10,15 @@ SRCDIR = ./src
 PWD = $(shell pwd)
 
 EXECUTABLES = sum adder x264
-HEADERS = $(EXECUTABLES:%=headers/%.h)
+HEADERS = $(EXECUTABLES:%=bytecodes/%.h)
 
 .SUFFIXES:
 .PRECIOUS: %.o %.s
 
 .PHONY: all
-all: $(EXECUTABLES)
+all: $(EXECUTABLES) $(HEADERS)
 
-headers: $(HEADERS)
-
-headers/%.h: byte-%
+bytecodes/%.h: byte-%
 	../../bin2c/bin/bin2c bytecode $@
 
 _start.s: $(SRCDIR)/_start.s
@@ -62,4 +60,4 @@ byte-% : %
 
 .PHONY: clean
 clean:
-	$(RM) $(EXECUTABLES) *.o *.s *.vhd *.h *.hex *.map
+	$(RM) $(EXECUTABLES) *.o *.s *.vhd *.h *.hex *.map $(HEADERS)

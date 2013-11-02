@@ -1,8 +1,7 @@
 #include "pixel.h"
 
-pixel pixels1[32];
-pixel pixels2[32];
-int result;
+int c;
+pixel pixels[64];
 
 sum2_t abs2(sum2_t a) {
     sum2_t s = ((a>>(BITS_PER_SUM-1))&(((sum2_t)1<<BITS_PER_SUM)+1))*((sum_t)-1);
@@ -24,8 +23,8 @@ int main () {
 //    sum2_t a0, a1, a2, a3;
 //    sum2_t sum = 0;
 //
-    pixel* pix1 = pixels1;
-    pixel* pix2 = pixels2;
+//    pixel* pix1 = pixels1;
+//    pixel* pix2 = pixels2;
 //
 //    int i;
 //    pixel ptemp;
@@ -49,7 +48,8 @@ int main () {
 //    result = (((sum_t)sum) + (sum>>BITS_PER_SUM)) >> 1;
 //    result = changeEndianess32(result);
 
-    result = pixels1[0];
+	//pixels[0] = pixels[0] + pixels[32];
+	c = 5;
 
     return 0;
 }

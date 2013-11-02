@@ -7,13 +7,6 @@
 #include <errno.h>
 #include <string.h>
 
-#include "rvex/bytecode.binc"
-
-#define RVEX_CORE_CTL_FILE "/sys/devices/virtual/rvex_core/rvex-smemory.0/rvex_core_ctl"
-#define RVEX_CORE_STATUS_FILE "/sys/devices/virtual/rvex_core/rvex-smemory.0/rvex_core_status"
-#define RVEX_DATA_MEMORY_FILE "/dev/rvex-dmemory.0"
-#define RVEX_INSTRUCTION_MEMORY_FILE "/dev/rvex-imemory.0"
-
 const unsigned char RVEX_START = '1';
 const unsigned char RVEX_CLEAR = '2';
 const unsigned char RVEX_DONE = '3';
@@ -44,7 +37,7 @@ int rvexOpen(const char * path, int oflag) {
 	return fd;
 }
 
-int rvexInit() {
+int rvexInit(char bytecode[]) {
 
 	printf("rvex: Opening files...\n");
 	fd_instr = rvexOpen(RVEX_INSTRUCTION_MEMORY_FILE, O_WRONLY);
