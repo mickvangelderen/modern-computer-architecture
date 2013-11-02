@@ -3,7 +3,7 @@
 #include <string.h>
 
 #include "bytecodes/x264.h"
-#include "rvex/rvex.h"
+#include "rvex.h"
 
 typedef signed char        int8_t;
 typedef unsigned char      uint8_t;
@@ -66,7 +66,7 @@ int x264_pixel_satd_8x4( pixel *pix1, intptr_t i_pix1, pixel *pix2, intptr_t i_p
     return (((sum_t)sum) + (sum>>BITS_PER_SUM)) >> 1;
 }
 
-int printPixelArray(pixel numbers[], int length) {
+void printPixelArray(pixel numbers[], int length) {
 	int i;
 	for (i = 0; i < length; i++) {
 		printf("%d%c", numbers[i], i == (length - 1) ? '\n' : ',');
@@ -79,7 +79,7 @@ int vex_pixel_satd_8x4( pixel *pix1, intptr_t i_pix1, pixel *pix2, intptr_t i_pi
 
     rvexSeek(0);
 
-    char temp[8 * 4];
+    pixel temp[8 * 4];
 
     for (i = 0, k = 0; i < 4; i++, pix1 += i_pix1) {
         for (j = 0; j < 8; j++) {

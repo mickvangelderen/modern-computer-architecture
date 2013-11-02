@@ -1,4 +1,4 @@
-#include "rvex/rvex.h"
+#include "rvex.h"
 
 #include <stdio.h>
 #include <stdlib.h>

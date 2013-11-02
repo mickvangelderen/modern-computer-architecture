@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 #include "bytecodes/adder.h"
-#include "rvex/rvex.h"
+#include "rvex.h"
 
 int main(int argc, char **argv) {
 

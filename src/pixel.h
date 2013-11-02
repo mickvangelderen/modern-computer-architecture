@@ -1,8 +1,8 @@
 #ifndef MCA_PIXEL_H
 #define MCA_PIXEL_H
 
-#include "osdep.h"
-#include "common.h"
+#include "common/osdep.h"
+#include "common/common.h"
 
 #if BIT_DEPTH > 8
     typedef uint32_t sum_t;
