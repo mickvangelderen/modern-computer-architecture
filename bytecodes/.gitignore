@@ -6,3 +6,5 @@
 *.map
 bytecode
 bytedata
+adder
+x264
