@@ -20,7 +20,7 @@
 	(((d) & 0x00ff) << 8)
 
 // Opens files and loads bytecode
-int rvexInit(char bytecode[]);
+int rvexInit(char bytecode[], size_t size);
 
 // Closes files
 void rvexDeInit();

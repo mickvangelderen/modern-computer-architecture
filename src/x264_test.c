@@ -66,44 +66,42 @@ int x264_pixel_satd_8x4( pixel *pix1, intptr_t i_pix1, pixel *pix2, intptr_t i_p
     return (((sum_t)sum) + (sum>>BITS_PER_SUM)) >> 1;
 }
 
-void printPixelArray(pixel numbers[], int length) {
-	int i;
-	for (i = 0; i < length; i++) {
-		printf("%d%c", numbers[i], i == (length - 1) ? '\n' : ',');
-	}
+void printCharArray(char numbers[], int length) {
+    int i;
+    for (i = 0; i < length; i++) {
+        printf("%d%c", numbers[i], i == (length - 1) ? '\n' : ',');
+    }
 }
 
 int vex_pixel_satd_8x4( pixel *pix1, intptr_t i_pix1, pixel *pix2, intptr_t i_pix2 )
 {
-    int i, j, k, result;
+    unsigned int result;
+    char data[64];
+
+    int i = 0;
+    int j = 0;
+    int k = 0;
 
     rvexSeek(0);
 
-    pixel temp[8 * 4];
-
-    for (i = 0, k = 0; i < 4; i++, pix1 += i_pix1) {
+    for (i = 0; i < 4; i++, pix1 += i_pix1) {
         for (j = 0; j < 8; j++) {
-            temp[k++] = pix1[i];
+            data[k++] = pix1[j];
         }
     }
 
-    printPixelArray(temp, 32);
-    rvexWrite(temp, 32 * sizeof(pixel));
-
-    for (i = 0, k = 0; i < 4; i++, pix2 += i_pix2) {
+    for (i = 0; i < 4; i++, pix2 += i_pix2) {
         for (j = 0; j < 8; j++) {
-            temp[k++] = pix2[i];
+            data[k++] = pix2[j];
         }
     }
 
-    printPixelArray(temp, 32);
-    rvexWrite(temp, 32 * sizeof(pixel));
+    rvexWrite(data, 64);
 
     rvexGo();
 
-    rvexSeek(64 * sizeof(pixel));
-
-    rvexRead(&result, sizeof(int));
+    rvexSeek(0);
+    rvexRead(&result, 4);
 
     return result;
 }
@@ -172,17 +170,14 @@ int main(int argc, char **argv)
     fr = fopen(argv[1], "r");
 
     if (use_vex) {
-        rvexInit(bytecode);
+        rvexInit(bytecode, sizeof(bytecode));
     }
 
     while ((j = read_pixels(fr, &i_pix1, &pix1, &i_pix2, &pix2)) != 0) {
 
         if (use_vex) {
-            printf("sizeof(pixel) == %d\n", (int) sizeof(pixel));
-            printf("%d + %d = %d\n", pix1[0], pix2[0], pix1[0] + pix2[0]);
             f = vex_pixel_satd_8x4(pix1, i_pix1, pix2, i_pix2);
         } else {
-            printf("%d + %d = %d\n", pix1[0], pix2[0], pix1[0] + pix2[0]);
             f = x264_pixel_satd_8x4(pix1, i_pix1, pix2, i_pix2);
         }
 

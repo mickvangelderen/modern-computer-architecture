@@ -1,9 +1,7 @@
 
-int a = 0;
-int b = 0;
-int c = 0;
+int a[3];
 
-main () {
-	c = a + b;
+int main () {
+	a[2] = a[0] + a[1];
 	return 0;
 }

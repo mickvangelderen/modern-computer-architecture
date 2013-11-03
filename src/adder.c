@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
 
 	int result1, result2;
 
-	rvexInit(bytecode);
+	rvexInit(bytecode, sizeof(bytecode));
 
 	// fist time
 	rvexWrite(&a, sizeof(int));

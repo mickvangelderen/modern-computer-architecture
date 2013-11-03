@@ -16,6 +16,12 @@ int fd_mem;
 int fd_ctl;
 int fd_stat;
 
+#ifdef DEBUG
+#define D_PRINTF(fmt, args...) printf(fmt, ## args)
+#else
+#define D_PRINTF(fmt, args...)
+#endif
+
 // works like open(const char * path, int oflag, ...) but only supports path and flag parameters. Prints errors if any.
 int rvexOpen(const char * path, int oflag) {
 	const size_t BUFFER_SIZE = 1024;
@@ -37,72 +43,72 @@ int rvexOpen(const char * path, int oflag) {
 	return fd;
 }
 
-int rvexInit(char bytecode[]) {
+int rvexInit(char bytecode[], size_t size) {
 
-	printf("rvex: Opening files...\n");
+	D_PRINTF("rvex: Opening files...\n");
 	fd_instr = rvexOpen(RVEX_INSTRUCTION_MEMORY_FILE, O_WRONLY);
 	fd_mem = rvexOpen(RVEX_DATA_MEMORY_FILE, O_RDWR);
 	fd_ctl = rvexOpen(RVEX_CORE_CTL_FILE, O_WRONLY);
 	fd_stat = rvexOpen(RVEX_CORE_STATUS_FILE, O_RDONLY);
 
-	printf("rvex: Files opened...\n");
+	D_PRINTF("rvex: Files opened...\n");
 
 	if (fd_instr < 0 || fd_mem < 0 || fd_ctl < 0 || fd_stat < 0) {
 		return -1;
 	}
 
 	// Incorporated the bytecode into the executable ;D
-	printf("rvex: writing bytecode...\n");
-	write(fd_instr, bytecode, sizeof(bytecode));
-	printf("rvex: bytecode written...\n");
+	D_PRINTF("rvex: writing bytecode...%d\n", (int) size);
+	write(fd_instr, bytecode, size);
+	D_PRINTF("rvex: bytecode written...\n");
 
 	return 0;
 }
 
 void rvexDeInit() {
-	printf("rvex: Closing files...\n");
+	D_PRINTF("rvex: Closing files...\n");
 	close(fd_mem);
 	close(fd_ctl);
 	close(fd_stat);
 	close(fd_instr);
-	printf("rvex: Files closing...\n");
+	D_PRINTF("rvex: Files closing...\n");
 }
 
 int rvexSeek(int offset) {
 	int result;
-	printf("rvex: seek for %d in bytedata\n", offset);
+	D_PRINTF("rvex: seek for %d in bytedata\n", offset);
 	result = lseek(fd_mem, offset, SEEK_SET);
-	printf("rvex: lseek %d\n", result);
+	D_PRINTF("rvex: lseek %d\n", result);
 	return result;
 }
 
 int rvexSeekRel(int offset) {
 	int result;
-	printf("rvex: seek for + %d in bytedata\n", offset);
+	D_PRINTF("rvex: seek for + %d in bytedata\n", offset);
 	result = lseek(fd_mem, offset, SEEK_CUR);
-	printf("rvex: lseek %d\n", result);
+	D_PRINTF("rvex: lseek %d\n", result);
 	return result;
 }
 
 ssize_t rvexWrite(const void *buf, size_t count) {
-	printf("rvex: write to bytedata\n");
+	D_PRINTF("rvex: write to bytedata\n");
 	return write(fd_mem, buf, count);
 }
 
 ssize_t rvexRead(void *buf, size_t count) {
-	printf("rvex: read %d bytes from bytedata\n", (int) count);
+	D_PRINTF("rvex: read %d bytes from bytedata\n", (int) count);
 	return read(fd_mem, buf, count);
 }
 
 void rvexGo() {
-	printf("rvex: go\n");
+	D_PRINTF("rvex: go\n");
 	write(fd_ctl, &RVEX_CLEAR, sizeof(unsigned char));
 	write(fd_ctl, &RVEX_START, sizeof(unsigned char));
-	printf("Wrote clear and start to \"%s\"\n", RVEX_CORE_CTL_FILE);
+	D_PRINTF("Wrote clear and start to \"%s\"\n", RVEX_CORE_CTL_FILE);
 	unsigned char status;
 	do {
 		lseek(fd_stat, 0, SEEK_SET);
 		read(fd_stat, &status, sizeof(unsigned char));
-		printf("Status %d\n", status);
+		D_PRINTF("Status %d\n", status);
 	} while (status != '3');
 }

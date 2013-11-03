@@ -21,7 +21,7 @@ INCLUDE_FOLDER := $(SOURCE_FOLDER)		# Single folder that gets added to the compi
 BUILD_FOLDER := build/					# Single folder in which intermediate compilation results will be put, may not contain spaces.
 TARGET_FOLDER := bin/					# Single folder in which the output file of the compilation will be put, may not contain spaces.
 COMPILER := gcc							# The compiler.
-COMPILER_FLAGS := -Wall -std=gnu99		# Compiler flags for the object compilation step.
+COMPILER_FLAGS := -Wall -std=gnu99 		# Compiler flags for the object compilation step.
 COMPILER_FLAGS_SB2 := -Wall -std=gnu99 -DWORDS_BIGENDIAN		# Compiler flags for the object compilation step.
 LINKER_FLAGS := 						# Compiler flags for the link step.
 INCLUDES := -Isrc -Ibytecodes -Irvex -Ix264
