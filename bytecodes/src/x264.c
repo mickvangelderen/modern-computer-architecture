@@ -1,6 +1,6 @@
 #include "pixel.h"
 
-char pixels[64];
+unsigned char pixels[64];
 
 sum2_t abs2(sum2_t a) {
     sum2_t s = ((a>>(BITS_PER_SUM-1))&(((sum2_t)1<<BITS_PER_SUM)+1))*((sum_t)-1);

@@ -76,7 +76,7 @@ void printCharArray(char numbers[], int length) {
 int vex_pixel_satd_8x4( pixel *pix1, intptr_t i_pix1, pixel *pix2, intptr_t i_pix2 )
 {
     unsigned int result;
-    char data[64];
+    unsigned char data[64];
 
     int i = 0;
     int j = 0;
@@ -168,6 +168,11 @@ int main(int argc, char **argv)
     }
 
     fr = fopen(argv[1], "r");
+
+    if (fr == NULL) {
+        printf("could not open %s\n", argv[1]);
+        return 1;
+    }
 
     if (use_vex) {
         rvexInit(bytecode, sizeof(bytecode));
