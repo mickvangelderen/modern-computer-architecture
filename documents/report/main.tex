@@ -13,12 +13,34 @@
 \usepackage{natbib}
 \usepackage{graphicx}
 \usepackage{listings}
+\usepackage{xcolor}
 
-\begin{document}
+\definecolor{code-bg}{gray}{0.96}
+\definecolor{code-comment}{HTML}{056121}
+
+\lstdefinestyle{C}{
+    language=C, 
+	backgroundcolor=\color{code-bg},
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue}\ttfamily,
+    stringstyle=\color{red}\ttfamily,
+    commentstyle=\color{code-comment}\ttfamily
+}
+
+\lstdefinestyle{bash}{
+    language=bash, 
+	backgroundcolor=\color{code-bg},
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue}\ttfamily,
+    stringstyle=\color{red}\ttfamily,
+    commentstyle=\color{code-comment}\ttfamily
+}
 
 \newcommand{\rvex}{\ensuremath{\rho}-VEX}
 \newcommand{\satd}{\texttt{x264\_pixel\_satd\_8x4}}
 \newcommand{\getref}{\texttt{get\_ref}}
+
+\begin{document}
 
 \maketitle
 
@@ -126,20 +148,80 @@ We modified the x264 application to log its processing time computed with
 clock\_gettime. This required linking the rt library.
 
 Then we tried to find an fpga that was not being used by anyone else and we ran
-the application.
+several versions of the x264 application. All of them included the code from Listing \ref{lst:timing} which allowed us to get an idea of the total runtime. 
 
-\begin{tabular}{ l c r }
-  1 & 2 & 3 \\
-  4 & 5 & 6 \\
-  7 & 8 & 9 \\
+\begin{lstlisting}[style=C,caption=Capturing runtime with the monotonic clock,label=lst:timing]
+struct timespec tss, tse, tsd; // start, end and diff
+clock_gettime(CLOCK_MONOTONIC, &tss);
+
+if( !ret )
+    ret = encode( &param, &opt );
+
+clock_gettime(CLOCK_MONOTONIC, &tse);
+if (tse.tv_nsec > tss.tv_nsec) {
+    tsd.tv_sec = tse.tv_sec - tss.tv_sec;
+    tsd.tv_nsec = tse.tv_nsec - tss.tv_nsec;
+} else {
+    tsd.tv_sec = tse.tv_sec - tss.tv_sec - 1;
+    tsd.tv_nsec = tse.tv_nsec - tss.tv_nsec + 1000000000;
+}
+printf("Took %lu.%09lu sec\n", tsd.tv_sec, tsd.tv_nsec);
+\end{lstlisting}
+
+We ran the script from Listing \ref{lst:testscript} to get an idea of the runtimes of the different versions. Note that we already did manual test runs to get an idea of how long the runs would take. We noticed that running the same test multiple times produced very similar run times. We did not find it necessary to do multiple runs for the purposes of this lab because the error would be very small in comparison with the run times for different versions of the application:
+
+\begin{lstlisting}
+Took 75.280923348 sec
+Took 75.350194581 sec
+Took 75.221714038 sec
+Took 75.374499116 sec
+\end{lstlisting}
+
+\begin{lstlisting}[style=bash,caption=Test script,label=lst:testscript]
+echo 'eledream 64x36 3 frames with timing' >> group11.log
+./x264-timing-sb2 eledream_64x36_3.y4m -o out.mkv | grep Took >> group11.log
+
+echo 'eledream 640x360 8 frames with timing' >> group11.log
+./x264-timing-sb2 eledream_640x360_8.y4m -o out.mkv | grep Took >> group11.log
+
+echo 'eledream 64x36 3 frames with rvex interface simple' >> group11.log
+./x264-rvex-sb2 eledream_64x36_3.y4m -o out.mkv | grep Took >> group11.log
+
+echo 'eledream 64x36 3 frames with rvex interface struct and inline' >> group11.log
+./x264-rvex-struct-inline-sb2 eledream_64x36_3.y4m -o out.mkv | grep Took >> group11.log
+\end{lstlisting}
+
+\begin{lstlisting}[caption=Test output,label=lst:testoutput]
+/ # cat group11.log
+eledream 64x36 3 frames with timing
+Took 75.699494266 sec
+eledream 640x360 8 frames with timing
+Took 317.733194410 sec
+eledream 64x36 3 frames with rvex interface simple
+Took 442.169817935 sec
+eledream 64x36 3 frames with rvex interface struct and inline
+Took 440.886382661 sec
+\end{lstlisting}
+
+Summarizing the manual and script results we get the following table:
+
+\begin{tabular}{ c | c c }
+   & 64x36 3f & 640x360 8f \\
+   vanilla & 75.7s & 317s \\
+   rvex simple & 442s & $>$20m \\
+   rvex inline & 441s & untested \\
 \end{tabular}
 
-\begin{itemize}
-  \item How much speedup did you obtain?
-  \item Is this what you have expected?
-  \item Give a theoretical calculation for the speedup you should have ex-
-        pected and compare it to the practical result.
-\end{itemize}
+Most importantly, we see that our optimization actually made the application run several times slower. 
+Also, we can conclude that the gcc compiler does a teriffic job at inlining functions when -O3 is enabled, even if you do not ask it to. 
+We couldnt wrap our heads around doing so much communication related tasks in a function that was basicly a relatively small fixed number of basic operations (*, +, -, shifts, comparisons) and achieving a faster result by that. 
+We assumed that the rvex was extremely tightly integrated into the microblaze which allowed insane communication speeds but the test results show that this is not the case. 
+
+The speedup that we obtained can be calculated by looking at the time spent in the kernel function. This should be about 14\% for the input video eledream\_640x360\_8.y4m judging from the profiling results obtained on the VM. We cannot say exactly how much time is spent there because we cannot profile on the Microblaze. 
+
+But because the rvex simple version took longer than 20 minutes which caused the ssh session to hang we cannot use the exact run time. Let us see what the speedup would be if the run time was 20 minutes exactly. 
+
+The vanilla version spends 14\% of the 75 seconds that it runs in \satd{}. So 86\% is spent in the rest of the functions. Since we have not changed anything beside the kernel we can assume that the time spent in that part will be equal for vanilla and for rvex simple. This means that $\frac{1200 - .86*75}{75 - .86*75} = 108$ is the relative speed of the vanilla function in comparison with the rvex version. It actually runs 108 times faster. In other words, the rvex version runs 108 times slower which amounts to a speedup of -10700\% obtained by introducing rvex. 
 
 \section{Additional assignment}
 
