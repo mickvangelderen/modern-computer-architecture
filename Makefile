@@ -15,7 +15,7 @@
 # ------------
 # Config start
 # ------------
-EXECUTABLE_NAMES := adder x264_test
+EXECUTABLE_NAMES := adder x264_test pow
 SOURCE_FOLDER := src/					# Single folder in which source files are placed, is not searched recursively, may not contain spaces.
 INCLUDE_FOLDER := $(SOURCE_FOLDER)		# Single folder that gets added to the compiler path via -I, may not contain spaces.
 BUILD_FOLDER := build/					# Single folder in which intermediate compilation results will be put, may not contain spaces.
