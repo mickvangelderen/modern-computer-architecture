@@ -1,0 +1,354 @@
+\section{Discussion of different papers} \label{papers}
+
+To investigate parallel programming for many-core architectures we've
+considered four papers by different authors. The papers discus different
+parallel programming methods or provide their own parallel programming
+solution. The following sections each summarize a paper.
+
+\subsection{Performance Analysis of Current Parallel Programming Models for Many-core Systems}
+
+\emph{Performance Analysis of Current Parallel Programming Models for Many-core
+Systems} \cite{CaoPerformanceAnalysis} is a paper written by Yangjie Cao et
+al.\ in 2013.
+
+%Nowadays processors consist out of many general purpose cores, and this will
+%only increase. This kind of processors is usually referred to as many-core
+%processors. Exploiting all the advantages of many-core processors however is
+%not trivial.
+%
+%The shift to multi-core and many-core is a result of power consumption, heat
+%dissipation and increasing processor frequencies.  In the near future it will
+%be common to have a processor consisting hundreds or even thousands of cores.
+
+To solve problems faced by many-core processor systems, extensive and intensive
+research is carried out on parallel programming models. A good programming
+model is usually judged on its generality. A good programming model can provide
+an essential bridge between hardware and high-level programming languages.
+
+%Programming models can be divided into two kinds: \emph{data-parallel} and
+%\emph{task-parallel} programming models. Data-parallel focusses on solving
+%data-independent problems and trying to distribute data on different parallel
+%computing nodes. With task-parallel programmers focus on decomposing the
+%problem into sub-tasks that can run in parallel.
+
+Task-parallel programming is becoming increasingly popular in the last decade.
+Several task-parallel libraries have been developed. With those libraries
+programmers can easily generate parallel tasks and have to worry less about
+these tasks are generated and mapped to the underlying hardware. Task
+scheduling and load balancing are transparently completed by the runtime
+systems.
+
+There are three typical task-parallel programming models described: Intel
+Thread Building library (TBB), MIT Cilk and OpenMP 3.0. Using experiments the
+programming models are compared.
+
+Cilk is a task-based parallel programming model language. Cilk philosophy is
+that the programmer can expose parallelism using a few keywords, while the Cilk
+runtime does the hard work of scheduling the computation to run efficiently on
+a given platform. The only addition to the programming language are three
+keywords: \texttt{cilk}, \texttt{spawn} and \texttt{sync}.
+
+TBB is a parallel programming library developed by Intel. It is mainly used the
+way of task instead of thread to express parallelism. The library can map the
+task efficiently on threads. TBB is a library so does not require special
+languages or an extra compiler. TBB tasks are a special kind of C++ objects,
+which allows the TBB model to explore a variety of parallelism. It supports
+nested parallelism, so you can build larger parallel components.
+
+OpenMP, which stands for Open Multiprocessing, was published by a group of
+major hardware and software vendors. It gives programmers a simple and flexible
+interface for developing parallel applications. The main aim is to simplify
+programming of multi-platform, shared-memory, parallel programs by insertions
+of pragmas into C/C++ code or special comments in Fortran code. These
+insertions instruct the compiler which code should be parallelized. In the view
+of OpenMP, tasks are units of work which are executed in parallel. A
+disadvantage of OpenMP is that it lacks fine grained control.
+
+To compare the different parallel programming models the authors conducted
+experiments to evaluate and compare the performance of different models. There
+were different benchmarks used (each model has different benchmarks). The
+experiments were conducted on real many-core systems.
+
+From experiment results most test applications obtain different levels of
+performance speedup. Most applications achieve linear speedup when the number
+of cores are increased. However when the number of cores is increased further,
+the speedup becomes slower or even decreases.
+
+The authors conclude that parallel programming models are crucial for
+easy-to-understand, concise and dense representation of parallelism. The
+experiments show that there are still many problems: (a) with scaling to
+many-core systems, (b) low utilization and (c) resource competition.
+
+\subsection{Parallel Phase Model: A programming Model for High-end Parallel Machines with Manycores}
+
+\emph{Parallel Phase Model: A programming Model for High-end Parallel Machines
+with Manycores} \cite{BrightwellParallelPhaseModel} is a paper written by
+Ron Brightwell et al.\ in 2009.
+
+Distributed parallel programming has mostly been done using the message passing
+model, such as MPI\@. This has been very successful but still require programmers
+to handle low-level tasks including explicit management of data distribution,
+data locality management, communication preparation and scheduling,
+synchronization and load balancing in order to achieve good performance.
+With the introduction of multi-core and many-core machines will make developing
+applications even more difficult because there will be node-level parallelism
+and cluster-level parallelism.
+
+A parallel programming model provides abstractions for programmers to express
+parallelism and exploiting the capabilities of the underlying hardware
+architecture. A programming model is typically implemented in a programming
+language, runtime library, or both. On physical shared memory machines, models
+such as POSIX Threads and OpenMP are also very useful; but in reality, high-end
+parallel machines tend to be distributed memory machines.
+
+This paper presents a programming model for parallel machines to address those
+parallel programming difficulties. This model is called the Parallel Phase
+Model (PPM). A main design points of the library are ease of use and
+performance.
+
+The PPM abstraction includes the following principles:
+
+\begin{itemize}
+	\item Virtualization of processes: programs can have an unbound number of
+		virtual processors rather than the fixed number of physical processors.
+
+	\item Virtualization of memory: virtual processors "communicate" through
+		shared variables: globally-shared at cluster level and physically
+		shared at node level.
+
+	\item Implicit communication: shared variables make communication between
+		processors implicit rather than explicit.
+
+	\item Implicit synchronization: the programming language constructs have
+		built-in implicit synchronization in the semantics.
+
+	\item Automatic data distribution and locality management
+
+	\item Layered parallelisms: global level or node level parallelism can be
+		separately expressed.
+\end{itemize}
+
+PPM adds some programming language constructs (to C):
+
+\begin{itemize}
+	\item \textbf{Declarations:} \texttt{PPM\_global\_shared} or
+		\texttt{PPM\_node\_shared} can be added before a variable declaration.
+		Global shared is one variable for all systems while node shared creates
+		a variable for each system in the networked cluster.
+	\item \textbf{Control constructs:} \texttt{PKK\_do(K) func(arguments);}
+		will run the function ``func'' in parallel on \emph{K} instances.
+	\item \textbf{PPM Functions:} Special functions that is started by the
+		\texttt{PPM\_do} construct.
+	\item \textbf{Parallel Phase Construct:} this are constructs which provide
+		a mechanism for implicit synchronization of parallel execution and
+		shared variable updates across multiple instances of the PPM functions.
+	\item \textbf{System variabler:} The PPM programming environment exposes
+		some variables such as \texttt{PPM\_node\_count},
+		\texttt{PPM\_cores\_per\_node} and \texttt{PPM\_node\_id}.
+	\item \textbf{Utility function:} various utility functions.
+\end{itemize}
+
+PPM is a SPMD model, which means that there is one copy of the same program on
+each physical node of the cluster. All copies run in parallel.
+
+PPM has a few design focuses
+
+\begin{itemize}
+	\item Algorithm parallelism expressiveness
+	\item Layered parallelisms
+	\item Guidance for good programming style
+	\item Simple and implicit synchronization
+	\item Simple memory model
+	\item No need for explicit communication
+	\item Shared data coherence does not reply on hardware cache capability
+	\item Supporting both synchronous and asynchronous mode on different nodes
+	\item Automatic scheduling of computation and communication needs, cores,
+		and network resources
+\end{itemize}
+
+PPM is implemented as a source-to-source compiler. A light runtime will do most
+of the optimizations. Using this runtime it does all the memory sharing,
+scheduling, remote communication management, among others.
+
+PPM was tested on a Cray XT4 machine with a total of 9660 compute nodes, each
+node having 4 cores. Three different application were considered:
+
+\begin{enumerate}
+	\item Conjugate Gradient Solver of Linear Systems
+	\item Sparse Matrix Generation for Multi-scale Collocation Method
+	\item Barnes-Hut Simulation
+\end{enumerate}
+
+In summary, the PPM model provides good performance for unstructured
+applications on current multi-core clusters.
+
+The PPM implementation are much smaller than MPI implementation of the same
+application. However the MPI programs have very fine-grained communication
+messages for good performance. In PPM this is all implicit so they can be
+much smaller, while having the same or better performance.
+
+\begin{table}
+	\caption{Code Size (Number of lines)}
+	\label{tab:code-size}
+	\centering
+	\begin{tabular}[!h]{|l|c|c|}
+		\hline
+		Application				& PPM Program	& MPI Program 	\\ \hline
+		Conjuncate Gradient		& 161			& 733			\\ \hline
+		Matrix Generation		& 424			& 744			\\ \hline
+		Barnes Hut				& 499			& N/A			\\ \hline
+	\end{tabular}
+\end{table}
+
+The paper concludes with saying it presented a parallel programming model for
+next generation high-end machines, which has a cluster of nodes with a large
+number of cores on each node.
+
+
+
+\subsection{Exploiting Multi- and Many-core Parallelism for Accelerating Image Compression}
+
+\emph{Exploiting Multi- and Many-core Parallelism for Accelerating Image
+Compression} \cite{KimExploitingMultiManyCore} is a paper written by Cheong
+Ghil Kim and Yong Soo Choi in 2011. It describes how they used Intel TBB and
+OpenCL to improve the performance by running a 2D DCT (discrete cosine
+transform) in parallel.
+
+As discussed in \section{introduction}, the current solution to get better
+performance is adding more cores to CPUs and GPUs. That is why parallel
+computing techniques such as incorporating multiple processing cores and other
+acceleration technologies are increasing in importance. In order to take
+advantage of multi-cores, programs should be written to accomplish their tasks
+using multiple parallel thread execution.
+
+Using GPUs, which have many cores requires a different type of parallelism:
+massively parallel programming. OpenCL is a new standard for task-parallel and
+data-parallel heterogeneous computing for, among others CPUs, GPUs and DSPs.
+
+There are different platform specific solutions, like BrookGPU, Cg or CUDA, or
+some general parallel programming languages such as OpenMP and MPI\@.
+Unfortunately they are platform specific or hard to use on GPUs for GPU-based
+heterogeneous system platforms. Therefor OpenCL is proposed for programming
+GPUs and accelerators including multi-core CPUs without modifying computing
+kernels.
+
+\paragraph{Multi-core CPUs}
+
+First steps of parallelization are Instruction Level Parallelism (ILP), where
+multiple instructions can be executed in one clock cycle. Simultaneous
+Multi-Threading (SMT) permits multiple independent threads of execution to
+better utilize the resources for Thread Level Parallelism (TLP). The next trend
+is the processors using chip multiprocessing (CMP). As a result dual and quad
+core systems are introduced, as well as six and eight cores.
+
+To extract high performance from multi-core architectures, Intel provides TBB,
+a C++ runtime library that targets desktop shared memory parallel programming.
+
+\paragraph{Many-core GPU} Differently from multi-core CPUs, many-core GPUs
+consists of much simpler, but more processing units helping for massively
+parallel computing. It can handle many threads through Single Instruction
+Multiple Threads (SIMT).
+
+GPUs used to be very difficult to program, but from 2001 and onwards each
+generation of GPUs added more features for the GPU to be programmed, which
+also make them potentially useful for more general computation-centric tasks.
+
+The paper gives an overview of two parallel programming technologies which
+enables to exploit task- and data-level parallelism: (1) TBB and (2) OpenCL\@.
+TBB is an open source runtime C++ library that targets shared desktop shared
+memory parallel programming. Because it's a library it integrates well into
+existing languages without changes to the compiler. OpenCL is a recent standard
+to support parallel execution on CPUs, GPUs, DPSs or other special purpose
+coprocessors. The main OpenCL C program includes the OpenCL runtime. The OpenCL
+kernels are compiled at runtime  and loaded into memory. Input and output data
+locations are set up right before the kernel execution, see
+figure~\ref{fig:OpenCL}.
+
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[scale=0.6]{OpenCL.png}
+	\caption{OpenCL execution}
+	\label{fig:OpenCL}
+\end{figure}
+
+The experiment in the paper uses DCT (discrete cosine transform). This is
+basically large 2D matrix data computations. The paper implements four
+different serial DCT versions: (1) implemented directly with serial processing,
+(2) with precomputing coefficients, (3) based on (2) but using direct matrix
+multiplication and (4) is the implementation of row-column decomposition
+method. Another input variable is the matrix size, which is 256, 512, 1024 or
+2048. For performance benchmarking the paper used TBB and OpenCL\@. From the
+results we see that the OpenCL implementation outperforms the one on TBB\@.
+For the parallel DTC implementations the speedup compared to the serial ones
+are 4.8 and 6.9 times for TBB and OpenCL, respectively. Especially it shows
+linear speedup, as the increase of 2D data sets.
+
+
+
+
+\subsection{Data Parallel Programming Model for Many-Core Architectures}
+
+The paper \emph{Data Parallel Programming Model for Many-Core Architectures}
+\cite{ZhangDataParallelProgramming} by Yongpeng Zhang, written in 2011,
+describes a data streaming framework on GPUs.
+
+GPUs have proved successful providing significant performance gains by
+exploiting data parallelism in existing algorithms. Programmers however are
+used to writing sequential programs. The paper proposes a framework GStream,
+a general-purpose, scalable data streaming framework on GPUs.
+
+The amount of data that has to be processed continues to grow. However
+Processor frequencies have reached their limits. Traditional instruction level
+parallelism can no longer provide worthy performance benefits. A higher degree
+of parallelism has to be extracted, both in algorithmic or implementation
+level, to fully utilize emerging multi and many-core architectures.
+
+Massive data-parallelization on the GPU can already be achieved with the NVIDIA
+GPU programming model CUDA\@. CUDA encourages users to create light-weight
+software threads at scale of thens of thousands, which is magnitudes larger
+than the maximum hardware concurrency inside the GPU\@. Although CUDA has great
+performance benefits, it requires deep understanding of the underlying
+architecture. Therefore it is desirable to develop a new programming model to
+reach an acceptable balance between programmability, portability and
+performance that accommodate the increasing number of cores per chip.
+
+The paper looks at the possibilities of the stream processing domain. Usually
+used in video encoding/decoding scenarios. Other domains such as data analysis
+and computationally intensive tasks are also discovering the benefits of the
+underlying streaming paradigm. The GStream streaming framework developed by the
+authors contributes the following: (1) abstraction expresses data-parallelism
+more naturally than task-oriented parallelism, (2) extreme concise and
+intuitive abstraction, (3) data-parallel approach reduces data dependencies,
+(4) first work to exploit streaming applications on clusters of GPUs, (5) the
+validity of the abstraction reaches beyond streaming.
+
+Two key concepts of GStream are \emph{filter} and \emph{channels}. A filter
+encapsulates the computing kernels that can be accelerated by the GPU\@. The
+data-parallelism inherently to filter kernels is facilitated by simple APIs to
+manipulate data in channels, which represent data links between any two
+filters.
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[scale=0.6]{GStreamStack.png}
+	\caption{GStream Software Stack}
+	\label{fig:GStreamStack}
+\end{figure}
+
+Figure~\ref{fig:GStreamStack} describes the GStream Software stack.
+It uses CUDA for data-parallelism and POSIX threads for task-parallelism. None
+of the concrete components are mandatory, as long as they are replaced with a
+library with the same functionality.
+
+The paper tested the acceleration by the GStream library with five benchmarks.
+Using four different implementations: (a) A native single-threaded C/C++
+program; (b) a multi-threaded C/C++ program using the GStream library without
+GPU support; (c) a multi-threaded program using GStream with GPU support and
+(d) a native CUDA implementation.
+
+For three of the five benchmark applications the speedup is between 3 and 30
+times. Comparing implementations (a) with (b) and (c) with (d) shows that the
+GStream imposes little overhead to the overall system.
+
+
+

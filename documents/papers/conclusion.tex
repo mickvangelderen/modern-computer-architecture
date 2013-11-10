@@ -1,0 +1,23 @@
+\section{Conclusion}
+
+% your personal appreciation if any
+
+It is clear that utilizing the full potential of the processor is crucial for
+high performance. Being able to utilize that power it should be made easier for
+programmers to write parallel programs. Most programmers are good at writing
+sequential programs but writing good parallel programs can be very difficult.
+Even though the numbers of cores keep increasing, the speedup is also very much
+dependent on the ratio of the program that can be parallelized
+\cite{hennessy2007computer}. The four papers summarized in section~\ref{papers}
+describe different programming models that can help achieving this, but
+\cite{CaoPerformanceAnalysis} showed that not all programming models scale that
+well to many-core architectures.
+
+Many of the parallel programming models discussed in the papers describe how
+you can rewrite existing algorithms to be distributed across the cores of a
+processor. Usually this is done by sprinkling some extra language constructs or
+library calls, for example instead a \texttt{for} statement a
+\texttt{cilk\_for} statement. Maybe instead of creating the algorithm
+sequentially first and then trying to parallelize it should change to begin
+with parallelism in mind from the start with a thoroughly concurrent
+programming language.
