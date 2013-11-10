@@ -28,6 +28,7 @@
  *****************************************************************************/
 
 #include <signal.h>
+#include <time.h>
 #define _GNU_SOURCE
 #include <getopt.h>
 #include "common/common.h"
@@ -35,8 +36,7 @@
 #include "input/input.h"
 #include "output/output.h"
 #include "filters/filters.h"
-#include "rvex/rvex.h"
- 
+
 #define FAIL_IF_ERROR( cond, ... ) FAIL_IF_ERR( cond, "x264", __VA_ARGS__ )
 
 #ifdef _WIN32
@@ -289,13 +289,24 @@ int main( int argc, char **argv )
     /* Restore title; it can be changed by input modules */
     SetConsoleTitle( originalCTitle );
 
-    rvexInit();
-
     /* Control-C handler */
     signal( SIGINT, sigint_handler );
 
+    struct timespec tss, tse, tsd; // start, end and diff
+    clock_gettime(CLOCK_MONOTONIC, &tss);
+ 
     if( !ret )
         ret = encode( &param, &opt );
+
+    clock_gettime(CLOCK_MONOTONIC, &tse);
+    if (tse.tv_nsec > tss.tv_nsec) {
+        tsd.tv_sec = tse.tv_sec - tss.tv_sec;
+        tsd.tv_nsec = tse.tv_nsec - tss.tv_nsec;
+    } else {
+        tsd.tv_sec = tse.tv_sec - tss.tv_sec - 1;
+        tsd.tv_nsec = tse.tv_nsec - tss.tv_nsec + 1000000000;
+    }
+    printf("Took %lu.%09lu sec\n", tsd.tv_sec, tsd.tv_nsec);
 
     /* clean up handles */
     if( filter.free )
@@ -309,8 +320,6 @@ int main( int argc, char **argv )
     if( opt.qpfile )
         fclose( opt.qpfile );
 
-    rvexDeInit();
-    
     SetConsoleTitle( originalCTitle );
 
     return ret;
