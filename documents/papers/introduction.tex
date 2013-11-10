@@ -1,0 +1,44 @@
+\section{Introduction} \label{introduction}
+
+% introduction with problem description
+
+Over the past few decades, processors have increased their performance. From
+1986 to 2002 the annual increase in growth was around 52\% per year. Since 2002
+however, the limits of power, heat dissipation, available instruction-level
+parallelism, and long memory latency have slowed uniprocessor performance, to
+about 20\% per year \cite{hennessy2007computer}. Rather improving
+uniprocessors, Intel joined IBM and Sun in improving processor performance by
+using multiple processors.
+
+With the introduction multiple processors there is a switch of focus from
+instruction level parallelism (ILP) to \emph{thread-level parallelism} (TLP)
+and \emph{data-level parallelism} (DLP). Whereas compilers and hardware can
+exploit ILP implicitly, TLP and DLP require the programmer's attention to write
+parallel code in a performant way \cite{hennessy2007computer}.
+
+Exploiting all the advantages of this kind of processors is not be trivial, and
+one of the main challenges is how to utilize all the available on-chip
+computing power \cite{CaoPerformanceAnalysis}.
+
+Exploiting all the advantages manually is extremely difficult, especially when
+it's not the programmers main field of interest, like physical scientists
+\cite{KimExploitingMultiManyCore}. Also generality of solutions for different
+type of architectures is an problem \cite{CaoPerformanceAnalysis}. Not only
+CPUs with two, four, six or eight cores are considered, also GPUs with even
+more simpler computational cores are increasingly more used for general
+computational tasks \cite{ZhangDataParallelProgramming}. Besides multiple cores
+computations can also be parallelized across multiple computational nodes which
+consist out of multiple computational cores
+\cite{BrightwellParallelPhaseModel}.
+
+There are several parallel programming models that can help utilize multi-core
+or many-core processors. Parallel programming models can be divided into two
+kinds: \emph{data-parallel} and \emph{task-parallel} programming models.
+Data-parallel focusses on solving data-independent problems and trying to
+distribute data on different parallel computing nodes. With task-parallel
+programmers focus on decomposing the problem into sub-tasks that can run in
+parallel.
+
+In the next section we will summarize four relevant papers about parallel
+programming models, then the papers and solution from the papers are compared
+by several criteria and finally some conclusions.

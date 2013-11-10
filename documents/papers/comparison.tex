@@ -1,0 +1,67 @@
+\section{Comparison}
+
+% definition of evaluation and comparison criteria
+% both quantitative nd qualitative
+
+% results of comparison including thorough argumentation of pros and cons of
+% the different approaches
+
+For comparison and evaluation of different kinds of parallel programming
+models there are a few criteria.
+
+\begin{itemize}
+	\item \textbf{Efficient exploitation of all the hardware:} If there are N
+		cores in a processor, how well does the programming model use all the N
+		cores, using good scheduling, load balancing and memory management.
+	\item \textbf{Ease of use for programmers:} As utilizing all hardware is
+		very difficult to do manually, programming models and frameworks can
+		help to make it easier for programmers.
+	\item \textbf{Generalizability:} Can the solution be used on different
+		architectures, how does it scale to many-core processors? Does it only
+		work on CPUs or also GPUs, DSPs or even across a cluster. Also how the
+		method is implemented in the programming language, as pragmas, language
+		extensions or library APIs.
+\end{itemize}
+
+\paragraph{Performance} \cite{CaoPerformanceAnalysis} presents a good
+comparison for how the Cilk, TBB and OpenML programming models scale to more
+cores. Each programming model is tested with different benchmarks so it's
+difficult to actually compare the actual speedup ratios. What's also visible is
+that the speedups become less when the number of cores increase, which can be
+explained by Amdahls's Law \cite{hennessy2007computer}. OpenCL and TBB are
+compared in \cite{KimExploitingMultiManyCore} with a discrete cosine transform
+application, this paper focusses on computations on the GPU, which shows that
+for that application the OpenCL method performs better than TBB.
+\cite{BrightwellParallelPhaseModel} compares MPI with PPM for clusters of
+multi-core machines and shows that the PPM is comparable in performance.
+Finally \cite{ZhangDataParallelProgramming} presents GStream and does a
+performance comparison between GStream and CUDA for GPUs and show that the
+difference in performance between the two is very small.
+
+\paragraph{Ease of use} Especially \cite{BrightwellParallelPhaseModel} focusses
+on the ease of use for parallel programming. It compares their PPM solution
+with the message passing model MPI and get a substantial reduction of code size
+of the same problem (as shown in table~\ref{tab:code-size}). It adds extra
+declarations to the C programming language and needs an extra source-to-source
+compiling step. TBB described in
+\cite{KimExploitingMultiManyCore,CaoPerformanceAnalysis} is a C++ library and
+does not need special languages or compilers. It is not further described if
+using TBB tends to be easy or difficult. Cilk adds three keywords to the
+programming language and aims for simplicity \cite{KimExploitingMultiManyCore}.
+Simplicity is also an aim of OpenMP \cite{KimExploitingMultiManyCore}. Besides
+\cite{BrightwellParallelPhaseModel} the other papers don't provide any metrics
+that support claims about some method being easy to use for programmers or not.
+
+\paragraph{Generalizability} One of the reasons of the programming models
+described in the four papers is that they can abstract platform specific
+things. For example GStream's architecture (figure~\ref{fig:GStreamStack}) can
+use CUDA, but the concrete implementation can be exchanged for something else,
+so it is not NVIDIA dependent anymore \cite{ZhangDataParallelProgramming}.
+Also the programmer doesn't have to think about the number of actual cores
+anymore, because that's somewhere the programming model can manage. Between
+the papers is a difference that \cite{BrightwellParallelPhaseModel} describes
+an model that even generalizes over physical machines to a network cluster.
+There the programmer does not need to worry about which node and core does the
+computation, only that the computation kernel should be parallelized. Other
+programming models like GStream and OpenCL focus more on GPUs
+\cite{KimExploitingMultiManyCore, ZhangDataParallelProgramming}.
