@@ -1,6 +1,15 @@
 #include "pixel.h"
 
-unsigned char pixels[64];
+pixel pix1[32];
+pixel pix2[32];
+int result;
+
+#define FLIP_ENDI_32(a) ( \
+        (((a)&0x000000FF) << 24) | \
+        (((a)&0x0000FF00) << 8) | \
+        (((a)&0x00FF0000) >> 8) | \
+        (((a)&0xFF000000) >> 24) \
+    )
 
 sum2_t abs2(sum2_t a) {
     sum2_t s = ((a>>(BITS_PER_SUM-1))&(((sum2_t)1<<BITS_PER_SUM)+1))*((sum_t)-1);
@@ -31,14 +40,8 @@ int x264_pixel_satd_8x4( pixel *pix1, int i_pix1, pixel *pix2, int i_pix2 )
 
 int main () {
 
-    unsigned int i, result;
-
-    result = x264_pixel_satd_8x4((pixel *) pixels, 8, (pixel *) pixels + 32, 8);
-
-    pixels[0] = (result >> 24) & 0xFF;
-    pixels[1] = (result >> 16) & 0xFF;
-    pixels[2] = (result >>  8) & 0xFF;
-    pixels[3] = (result >>  0) & 0xFF;
+    result = x264_pixel_satd_8x4(pix1, 8, pix2, 8);
+    result = FLIP_ENDI_32(result);
 
     return 0;
 }

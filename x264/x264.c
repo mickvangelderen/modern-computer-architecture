@@ -36,6 +36,8 @@
 #include "input/input.h"
 #include "output/output.h"
 #include "filters/filters.h"
+#include "rvex/x264.bc" // bytecode
+#include "rvex/rvex.h"
 
 #define FAIL_IF_ERROR( cond, ... ) FAIL_IF_ERR( cond, "x264", __VA_ARGS__ )
 
@@ -292,6 +294,12 @@ int main( int argc, char **argv )
     /* Control-C handler */
     signal( SIGINT, sigint_handler );
 
+    rvexInit(&rvex0, bytecode, sizeof(bytecode), 
+        RVEX_0_INSTRUCTION_MEMORY_FILE,
+        RVEX_0_DATA_MEMORY_FILE,
+        RVEX_0_CORE_CTL_FILE,
+        RVEX_0_CORE_STATUS_FILE); // provided by rvex/x264.h
+
     struct timespec tss, tse, tsd; // start, end and diff
     clock_gettime(CLOCK_MONOTONIC, &tss);
  
@@ -307,6 +315,8 @@ int main( int argc, char **argv )
         tsd.tv_nsec = tse.tv_nsec - tss.tv_nsec + 1000000000;
     }
     printf("Took %lu.%09lu sec\n", tsd.tv_sec, tsd.tv_nsec);
+
+    rvexDispose(&rvex0);
 
     /* clean up handles */
     if( filter.free )

@@ -9,7 +9,7 @@ SIMFLAGS = --ips='"[r-VEX c]"'  --c.trace=5 --c.trace_regs=3
 SRCDIR = ./src
 PWD = $(shell pwd)
 
-EXECUTABLES = adder x264
+EXECUTABLES = adder x264 mult
 HEADERS = $(EXECUTABLES:%=bytecodes/%.h)
 
 .SUFFIXES:
