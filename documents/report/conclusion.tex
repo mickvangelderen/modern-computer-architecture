@@ -1,32 +1,25 @@
 \section{Conclusion}
 
+All in all the lab was definitely fun. It felt really rewarding to hack
+something together, inject some bytecode and see it working.
+
 We've identified a kernel function and changed the x264 program so the kernel
 is executed on the \rvex. The kernel we used is the \satd function. Using our
 abstracted \texttt{rvex*} functions you can write the instruction memory, write
 and read the data memory and start the \rvex. Unfortunately we didn't see a
-speedup, instead we even saw a decrease in performance. Assumably this is
+speedup, instead we even saw a decrease in performance. Presumably this is
 because of the communication overhead. The \satd function is called many times.
-Maybe by sending more data at once, and thus executing the \rvex less times
-might improve the performance.
+This can improved by reducing the number of reads and writes to the \rvex. This
+means selecting a bigger part of the application and send it over to the
+\rvex in its entirety.
 
 Using our \texttt{rvex*} functions, we were able to create different test
 programs which helped us testing the communication and get to know the
 platform, getting the endianness right and fixing multiple executions of the
 \rvex.
 
-All in all the lab was definitely fun. It felt really rewarding to hack
-something together, inject some bytecode and see it working.
-
-Regarding the results, we have some suggestions that we would have tried out
-given enough time.
-
-We still believe in the \rvex{} so we would try to reduce the performance loss
-of the current bottleneck: communication. This can be done by reducing the
-number of reads and writes to the \rvex{}. This means selecting a bigger part
-of the application and send it over to the \rvex{} in its entirety.
-
-We are interested in if the \rvex{} performance is dependent on the type of
-program that is run. Is it more efficient for highly repeating code or does it
-perform just as well for dynamic code with little repetition compared to the
-normal CPUs?
-
+Regarding the results, we have some ideas that we would have tried out given
+enough time. We are interested in if the \rvex performance is dependent on the
+type of program that is run. Is it more efficient for highly repeating code or
+does it perform just as well for dynamic code with little repetition compared
+to the normal CPUs?
