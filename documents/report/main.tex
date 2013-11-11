@@ -48,8 +48,7 @@
 
 The concept of this lab is to take a piece of code that is executed frequently
 and run it on a reconfigurable co-processor. 
-The extracted piece of code is
-called the kernel and the device is in our case the \rvex{}: A reconfigurable
+The extracted piece of code is called the kernel and the device is in our case the \rvex{}: A reconfigurable
 and extensible VLIW processor.
 
 The kernel needs to be compiled for the \rvex{} so that we can inject the
@@ -160,7 +159,7 @@ We modified the x264 application to log its processing time computed with
 clock\_gettime. 
 This required linking the rt library.
 
-Then we tried to find an fpga that was not being used by anyone else and we ran
+Then we tried to find an FPGA that was not being used by anyone else and we ran
 several versions of the x264 application. 
 All of them included the code from Listing \ref{lst:timing} which allowed us to get an idea of the total runtime. 
 
@@ -181,6 +180,17 @@ if (tse.tv_nsec > tss.tv_nsec) {
 }
 printf("Took %lu.%09lu sec\n", tsd.tv_sec, tsd.tv_nsec);
 \end{lstlisting}
+
+The versions that we created were the following
+
+\begin{description}
+    \item[vanilla] \hfill \\
+        The original x264 implementation. 
+    \item[rvex simple] \hfill \\
+        Simple implementation where memory mapped files are opened once for stability during execution and only one \rvex{} is supported at a time. 
+    \item[rvex inline] \hfill \\
+        Based on simple, uses an object to store the file descriptors so allows multiple \rvex{} processors to be used and the time critical functions are placed in a header file with the inline annotation. 
+\end{description}
 
 We ran the script from Listing \ref{lst:testscript} to get an idea of the runtimes of the different versions. 
 Note that we already did manual test runs to get an idea of how long the runs would take. 
@@ -232,20 +242,20 @@ Summarizing the manual and script results we get the following table:
 Most importantly, we see that our optimization actually made the application run several times slower. 
 Also, we can conclude that the gcc compiler does a teriffic job at inlining functions when -O3 is enabled, even if you do not ask it to. 
 We couldnt wrap our heads around doing so much communication related tasks in a function that was basicly a relatively small fixed number of basic operations (*, +, -, shifts, comparisons) and achieving a faster result by that. 
-We assumed that the rvex was extremely tightly integrated into the microblaze which allowed insane communication speeds but the test results show that this is not the case. 
+We assumed that the \rvex{} was extremely tightly integrated into the microblaze which allowed insane communication speeds but the test results show that this is not the case. 
 
 The speedup that we obtained can be calculated by looking at the time spent in the kernel function. 
 This should be about 14\% for the input video eledream\_640x360\_8.y4m judging from the profiling results obtained on the VM. 
 We cannot say exactly how much time is spent there because we cannot profile on the Microblaze. 
 
-But because the rvex simple version took longer than 20 minutes which caused the ssh session to hang we cannot use the exact run time. 
+But because the \rvex{} simple version took longer than 20 minutes which caused the ssh session to hang we cannot use the exact run time. 
 Let us see what the speedup would be if the run time was 20 minutes exactly. 
 
 The vanilla version spends 14\% of the 75 seconds that it runs in \satd{}. So 86\% is spent in the rest of the functions. 
-Since we have not changed anything beside the kernel we can assume that the time spent in that part will be equal for vanilla and for rvex simple. 
-This means that $\frac{1200 - .86*75}{75 - .86*75} = 108$ is the relative speed of the vanilla function in comparison with the rvex version. 
+Since we have not changed anything beside the kernel we can assume that the time spent in that part will be equal for vanilla and for \rvex{} simple. 
+This means that $\frac{1200 - .86*75}{75 - .86*75} = 108$ is the relative speed of the vanilla function in comparison with the \rvex{} version. 
 It actually runs 108 times faster. 
-In other words, the rvex version runs 108 times slower which amounts to a speedup of -10700\% obtained by introducing rvex. 
+In other words, the \rvex{} version runs 108 times slower which amounts to a speedup of -10700\% obtained by introducing \rvex{}. 
 
 \section{Additional assignment}
 

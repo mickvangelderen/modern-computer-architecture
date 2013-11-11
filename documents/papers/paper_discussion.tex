@@ -32,15 +32,12 @@ an essential bridge between hardware and high-level programming languages.
 %problem into sub-tasks that can run in parallel.
 
 Task-parallel programming is becoming increasingly popular in the last decade.
-Several task-parallel libraries have been developed. With those libraries
-programmers can easily generate parallel tasks and have to worry less about
-these tasks are generated and mapped to the underlying hardware. Task
-scheduling and load balancing are transparently completed by the runtime
-systems.
+Several task-parallel libraries have been developed. 
+These libraries allow programmers to easily generate parallel tasks by handling how the parallelization is realized on the underlying hardware. 
+Task scheduling and load balancing are transparently completed by the runtime systems.
 
 There are three typical task-parallel programming models described: Intel
-Thread Building library (TBB), MIT Cilk and OpenMP 3.0. Using experiments the
-programming models are compared.
+Thread Building library (TBB), MIT Cilk and OpenMP 3.0. Several experiments are done in order to compare these programming models. 
 
 Cilk is a task-based parallel programming model language. Cilk philosophy is
 that the programmer can expose parallelism using a few keywords, while the Cilk
@@ -200,9 +197,8 @@ much smaller, while having the same or better performance.
 	\end{tabular}
 \end{table}
 
-The paper concludes with saying it presented a parallel programming model for
-next generation high-end machines, which has a cluster of nodes with a large
-number of cores on each node.
+The paper concludes with the statement that it presented a parallel programming model for the
+next generation high-end machines; machines with a cluster of nodes where each node has a large number of processing cores. 
 
 
 

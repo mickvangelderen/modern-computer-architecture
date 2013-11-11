@@ -17,7 +17,8 @@ Many of the parallel programming models discussed in the papers describe how
 you can rewrite existing algorithms to be distributed across the cores of a
 processor. Usually this is done by sprinkling some extra language constructs or
 library calls, for example instead a \texttt{for} statement a
-\texttt{cilk\_for} statement. Maybe instead of creating the algorithm
-sequentially first and then trying to parallelize it should change to begin
-with parallelism in mind from the start with a thoroughly concurrent
-programming language.
+\texttt{cilk\_for} statement. Maybe the answer does not lie in finding ways to parallelize sequential algorithms but in educating programmers to think sequentially. An other approach towards the same goal is finding ways of programming that allow parallelization which are more intuitive to programmers. Event based programs for example are for a lot of programmers much easier to understand. If we manage to find efficient algorithms for effectively finding parallelizable events, better parallelization can be achieved while it is essentially coming from the programming level. 
+
+The ideal model is one that is easy to use and learn while having the effective computational power scale linearly with the amount of cores. 
+The PPM model seems to be closest to that from the models we have discussed and it is definitely a good starting point for further developments. 
+However, the industry seems to be heavily focussed on bringing the technique from GPU's to the CPU and maybe we need to take an entirely different approach. 
