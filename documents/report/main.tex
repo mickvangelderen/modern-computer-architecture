@@ -60,7 +60,7 @@ usual on a regular processor.
 \section{Communication}
 
 We have access to several (but not enough during the lab) FPGAs which are
-configured as Microblaze processors and run Linux.
+configured as MicroBlaze processors and run Linux.
 
 The \rvex{} is a configured as a co-processor that can be controlled using a
 number of memory mapped files. The is a file for writing the instruction
@@ -91,7 +91,7 @@ We abstracted this away to a small interface with the following functionality:
 We compiled the unmodified x264 application with profiling support on a VM that
 allows us to compile microblaze and \rvex{} applications.
 Unfortunately we
-cannot use gprof on the Microblaze machine itself so we ran gprof on the VM
+cannot use gprof on the MicroBlaze machine itself so we ran gprof on the VM
 itself.
 
 Using the input video $\sim$/Videos/inputs/eledream\_640x360\_8.y4m we obtained
@@ -139,8 +139,8 @@ the best optimization area right away.
 
 \section{Endianess}
 
-Since we had to compile for the Microblaze using the flag
-\texttt{-DWORD-BIGENDIAN} we figured that the Microblaze would be a big endian
+Since we had to compile for the MicroBlaze using the flag
+\texttt{-DWORD-BIGENDIAN} we figured that the MicroBlaze would be a big endian
 machine.  You can always test it by writing a multibyte value like
 \texttt{0xDEADBEEF} to memory and read the individual bytes. If you read
 \texttt{0xDE 0xAD 0xBE 0xEF} you will know that you have a big endian machine.
@@ -237,14 +237,14 @@ not ask it to.  We couldnt wrap our heads around doing so much communication
 related tasks in a function that was basicly a relatively small fixed number of
 basic operations (*, +, -, shifts, comparisons) and achieving a faster result
 by that.  We assumed that the \rvex was extremely tightly integrated into the
-Microblaze which allowed very good communication speeds but the test results
+MicroBlaze which allowed very good communication speeds but the test results
 show that this is not the case.
 
 The speedup that we obtained can be calculated by looking at the time spent in
 the kernel function. This should be about 14\% for the input video
 eledream\_640x360\_8.y4m judging from the profiling results obtained on the
 VM\@. We cannot say exactly how much time is spent there because we cannot
-profile on the Microblaze.
+profile on the MicroBlaze.
 
 Because the \rvex simple version took longer than 20 minutes which caused the
 SSH session to hang we cannot use the exact run time. Let us see what the
