@@ -10,23 +10,28 @@ int main(int argc, char **argv) {
 		return -1;
 	}
 
-	rvexInit(bytecode, sizeof(bytecode));
+	rvexInit(&rvex0, bytecode, sizeof(bytecode),
+		RVEX_0_INSTRUCTION_MEMORY_FILE,
+		RVEX_0_DATA_MEMORY_FILE,
+		RVEX_0_CORE_CTL_FILE,
+		RVEX_0_CORE_STATUS_FILE);
+
 	int n = atoi(argv[1]);
 	int c = atoi(argv[2]);
 	int temp = 1;
 	while(c > 0) {
 		// printf("in loop c = %d\n\tn = %d\t0x%08X\n\ttemp = %d\t0x%08X\n", c, n, n, temp, temp);
-		rvexSeek(0);
-		rvexWrite(&n, sizeof(int));
-		rvexWrite(&temp, sizeof(int));
-		rvexGo();
-		rvexRead(&temp, sizeof(int));
+		rvexSeek(&rvex0, 0);
+		rvexWrite(&rvex0, &n, sizeof(int));
+		rvexWrite(&rvex0, &temp, sizeof(int));
+		rvexGo(&rvex0);
+		rvexRead(&rvex0, &temp, sizeof(int));
 		c--;
 	}
 
 	printf("n^c = %d\n", temp);
 
-	void rvexDeInit();
+	rvexDispose(&rvex0);
 
 	return 0;
 }

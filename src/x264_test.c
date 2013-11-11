@@ -75,34 +75,16 @@ void printCharArray(char numbers[], int length) {
 
 int vex_pixel_satd_8x4( pixel *pix1, intptr_t i_pix1, pixel *pix2, intptr_t i_pix2 )
 {
-    unsigned int result;
-    unsigned char data[64];
-
-    int i = 0;
-    int j = 0;
-    int k = 0;
-
-    rvexSeek(0);
-
+    int i, result;
+    rvexSeek(&rvex0, 0);
     for (i = 0; i < 4; i++, pix1 += i_pix1) {
-        for (j = 0; j < 8; j++) {
-            data[k++] = pix1[j];
-        }
+        rvexWrite(&rvex0, pix1, 8 * sizeof(pixel));
     }
-
     for (i = 0; i < 4; i++, pix2 += i_pix2) {
-        for (j = 0; j < 8; j++) {
-            data[k++] = pix2[j];
-        }
+        rvexWrite(&rvex0, pix2, 8 * sizeof(pixel));
     }
-
-    rvexWrite(data, 64);
-
-    rvexGo();
-
-    rvexSeek(0);
-    rvexRead(&result, 4);
-
+    rvexGo(&rvex0);
+    rvexRead(&rvex0, &result, sizeof(int));
     return result;
 }
 
@@ -175,7 +157,11 @@ int main(int argc, char **argv)
     }
 
     if (use_vex) {
-        rvexInit(bytecode, sizeof(bytecode));
+        rvexInit(&rvex0, bytecode, sizeof(bytecode),
+            RVEX_0_INSTRUCTION_MEMORY_FILE,
+            RVEX_0_DATA_MEMORY_FILE,
+            RVEX_0_CORE_CTL_FILE,
+            RVEX_0_CORE_STATUS_FILE);
     }
 
     while ((j = read_pixels(fr, &i_pix1, &pix1, &i_pix2, &pix2)) != 0) {
@@ -195,7 +181,7 @@ int main(int argc, char **argv)
     fclose(fr);
 
     if (use_vex) {
-        rvexDeInit();
+        rvexDispose(&rvex0);
     }
 
     printf("hello world %s\n", argv[0]);
