@@ -102,7 +102,7 @@ an integer, so four byes, which should be reversed.
 Loading the instruction memory with separate commands before executing the
 program on the MicroBlaze is pretty inconvenient. That is why we write the
 bytedata to the instruction memory in the application. The compiled kernel
-function is actually compiled to a C header file which can directly be written
+function is actually converted to a piece of C code and saved in a file which can then directly be written
 to the instruction memory. This solves the inconvenience of multiple files for
 the same program.
 
@@ -227,27 +227,23 @@ with the rvex version.  It actually runs 108 times faster.  In other words, the
 rvex version runs 108 times slower which amounts to a speedup of -10700\%
 obtained by introducing rvex.
 
-\section{Additional assignment}
-
-\begin{itemize}
-  \item What were the results of the additional assignment? How did it affect
-        the speed of the application?
-\end{itemize}
-
-\begin{figure}[h!]
-  \centering
-  \includegraphics[scale=1.7]{universe.jpg}
-  \caption{The Universe}
-  \label{threadsVsSync}
-\end{figure}
+Theoretically, the perfect optimalization for the selected kernel would be to reduce the computation time to 0. 
+This means that the 14\% becomes 0\% and so the maximum attainable speedup is $\frac{100}{100 - 14} - 100 = 16\%$
 
 \input{additional-assignment}
 
 \section{Conclusion}
 
-``I always thought something was fundamentally wrong with the universe'' \citep{adams1995hitchhiker}
+All in all the lab was definitely fun. 
+It felt really rewarding to hack something together, inject some bytecode and see it working. 
 
-\bibliographystyle{plain}
-\bibliography{main}
+Regarding the results, we have some suggestions that we would have tried out given enough time. 
+
+We still believe in the \rvex{} so we would try to reduce the performance loss of the current bottleneck: communication. 
+This can be done by reducing the number of reads and writes to the \rvex{}. 
+This means selecting a bigger part of the application and send it over to the \rvex{} in its entirety. 
+
+We are interested in if the \rvex{} performance is dependent on the type of program that is run. 
+Is it more efficient for highly repeating code or does it perform just as well for dynamic code with little repitition compared to the normal CPUs?
 
 \end{document}
