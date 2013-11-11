@@ -119,16 +119,16 @@ The versions that we created were the following
 
 \begin{description}
     \item[vanilla] \hfill \\
-        The original x264 implementation. 
+        The original x264 implementation.
     \item[rvex simple] \hfill \\
-        Simple implementation where memory mapped files are opened once for stability during execution and only one \rvex{} is supported at a time. 
+        Simple implementation where memory mapped files are opened once for stability during execution and only one \rvex{} is supported at a time.
     \item[rvex inline] \hfill \\
-        Based on simple, uses an object to store the file descriptors so allows multiple \rvex{} processors to be used and the time critical functions are placed in a header file with the inline annotation. 
+        Based on simple, uses an object to store the file descriptors so allows multiple \rvex{} processors to be used and the time critical functions are placed in a header file with the inline annotation.
 \end{description}
 
-We ran the script from Listing~\ref{lst:testscript} to get an idea of the runtimes of the different versions. 
-Note that we already did manual test runs to get an idea of how long the runs would take. 
-We noticed that running the same test multiple times produced very similar run times. 
+We ran the script from Listing~\ref{lst:testscript} to get an idea of the runtimes of the different versions.
+Note that we already did manual test runs to get an idea of how long the runs would take.
+We noticed that running the same test multiple times produced very similar run times.
 We did not find it necessary to do multiple runs for the purposes of this lab because the error would be very small in comparison with the run times for different versions of the application:
 
 \begin{verbatim}
@@ -164,7 +164,7 @@ eledream 64x36 3 frames with rvex interface struct and inline
 Took 440.886382661 sec
 \end{lstlisting}
 
-Table~\ref{tab:exe-times} summarizes the results found by manual testing and the listed script. 
+Table~\ref{tab:exe-times} summarizes the results found by manual testing and the listed script.
 
 \begin{table}[!h]
     \centering

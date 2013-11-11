@@ -1,1 +1,26 @@
 \section{Data Layout}
+
+The \satd{} function has the following signature:
+
+\begin{verbatim}
+int x264_pixel_satd_8x4(
+    pixel *pix1, int i_pix1,
+    pixel *pix2, int i_pix2);
+\end{verbatim}
+
+This is a function that takes two arrays of pixels, something that has to do
+with the indices of the pixels in the array, and returns a single integer.
+
+From the implementation we can see that the data used by the array is always $4
+\times 8 = 32$ pixels per array. This means that the data layout should have at
+least two times 32 times the size of one pixel. The size of a pixel is defined
+as \texttt{uint\_8}. If we choose \texttt{i\_pix1} and \texttt{i\_pix2} to
+always be 8, we don't have to send those values, which saves sending data.
+Setting those parameters to a fixed value has also the advantage that the array
+indexes looked up by the function are always predictably 0 to 32
+
+Also for the return value we should reserve 4 bytes, which is the size of an
+integer. When we have calculated the result, we could write this back to the
+first position, but we write the result after the data of the two pixel arrays.
+The advantage for doing this is because it's slightly easier and has a better
+maintainability.
