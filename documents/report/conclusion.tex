@@ -14,3 +14,19 @@ programs which helped us testing the communication and get to know the
 platform, getting the endianness right and fixing multiple executions of the
 \rvex.
 
+All in all the lab was definitely fun. It felt really rewarding to hack
+something together, inject some bytecode and see it working.
+
+Regarding the results, we have some suggestions that we would have tried out
+given enough time.
+
+We still believe in the \rvex{} so we would try to reduce the performance loss
+of the current bottleneck: communication. This can be done by reducing the
+number of reads and writes to the \rvex{}. This means selecting a bigger part
+of the application and send it over to the \rvex{} in its entirety.
+
+We are interested in if the \rvex{} performance is dependent on the type of
+program that is run. Is it more efficient for highly repeating code or does it
+perform just as well for dynamic code with little repetition compared to the
+normal CPUs?
+
