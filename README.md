@@ -31,6 +31,14 @@ Video conversion software modded to use a kernel for the pixel_satd_8x4_somethin
 Also runtime measuring functionality was added because the Microblaze doesn't support profiling with gprof. 
 Multiple precompiled binaries can be found within. 
 
+The files that have been changed are:
+
+	x264/x264.c
+	x264/common/pixel.c
+	x264/rvex/*
+
+Also librt was added to the linker flags for clock_gettime and related functions and of course x264/rvex/rvex.c was added to the source files. 
+
 ## src/
 
-Some (maybe outdated) test programs that might us the rvex interface or not. pixel.h supplies some x264 data types and macros. 
+Some test programs that might use the rvex interface and are slightly outdated with respect to the rvex interface in x264/rvex/. pixel.h supplies some x264 data types and macros. 
