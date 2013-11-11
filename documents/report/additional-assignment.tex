@@ -1,19 +1,19 @@
 \section{Additional Assigment}
-Except for the joy of achieving an actual speedup, we did not think that extracting another function would teach us a whole lot more about the process. 
-It would in our eyes teach us a lot about the x264 application but not without severe frustration and confusion as to what is going on. 
+Except for the joy of achieving an actual speedup, we did not think that extracting another function would teach us a whole lot more about the process.
+It would in our eyes teach us a lot about the x264 application but not without severe frustration and confusion as to what is going on.
 
-So we set a challenge for ourselves which was to figure out a way of improving the lab itself. 
-We noticed that some of the people were not that experienced with \texttt{c} and due to the performance heavy x264 application the small number of \rvex{} machines, testing during the lab was an absolute pain and took a lot of valuable time away. 
+So we set a challenge for ourselves which was to figure out a way of improving the lab itself.
+We noticed that some of the people were not that experienced with \texttt{C} and due to the performance heavy x264 application the small number of \rvex{} machines, testing during the lab was an absolute pain and took a lot of valuable time away.
 
 The new assignments are placed in four categories:
 
-\paragraph{getting your c going} \hfill \\
-adder - write a c application that takes two integers as arguments and adds them, compile it for the VM
+\paragraph{getting your C going} \hfill \\
+adder - write a C application that takes two integers as arguments and adds them, compile it for the VM
 
-pow - write a c application that takes two integers a and b where $b \ge 0$ and calculates a\^b without the math library, compile and run it for the Microblaze FPGA
+pow - write a C application that takes two integers a and b where $b \ge 0$ and calculates $a^b$ without the math library, compile and run it for the Microblaze FPGA
 
 \paragraph{using file operations} \hfill \\
-bin2c - create a binary to c-code converter, read in a binary file and print a character array with the bytes in it. 
+bin2c - create a binary to c-code converter, read in a binary file and print a character array with the bytes in it.
 
 \paragraph{introducing rvex} \hfill \\
 rvex-adder - write an rvex kernel that adds two integers
@@ -31,9 +31,10 @@ rvex-lib - write a simple interface for rvex.c and rvex.h containing the followi
 	\item rvexWrite: write to data memory
 	\item rvexGo: start the rvex and block until the operation is finished
 \end{enumerate}
-They should operate on an Rvex object that you must define. hint: struct, extern
 
-Apply the rvex-lib to your rvex-adder and then to your rvex-pow application. Test if everthing still is working as intended. 
+They should operate on an Rvex object that you must define\. hint: struct, extern.
+
+Apply the rvex-lib to your rvex-adder and then to your rvex-pow application. Test if everthing still is working as intended.
 
 \paragraph{real-life application} \hfill \\
 rvex-x264 - modify x264 to use a kernel
@@ -41,10 +42,10 @@ rvex-x264 - modify x264 to use a kernel
 You can supply a basic project setup with Makefiles. Each category can use its own introduction giving hints such as use open instead of fopen for memory mapped files.
 
 The adder application is useful for its extreme simplicity.
-It is easy to test and discover argument passing and endianess handling (for the rvex version) on. 
+It is easy to test and discover argument passing and endianess handling (for the rvex version).
 
-The pow application is useful because it requires multiple calls to rvexGo. 
-This will remind students of resetting the data memory cursor for the rvex version. 
+The pow application is useful because it requires multiple calls to rvexGo.
+This will remind students of resetting the data memory cursor for the rvex version.
 
 \begin{lstlisting}[language=C,style=C,caption=pow - Microblaze part,label=lst:pow-microblaze]
 #include <stdio.h>
@@ -55,7 +56,7 @@ This will remind students of resetting the data memory cursor for the rvex versi
 int main(int argc, char **argv) {
 
 	if (argc != 3) {
-		printf("Use like this: `%s n c` to let the " 
+		printf("Use like this: `%s n c` to let the "
 			"program calculate n^1..c\n", argv[0]);
 		return -1;
 	}
@@ -86,7 +87,7 @@ int main(int argc, char **argv) {
 }
 \end{lstlisting}
 
-It is a simple program but uses all the functionality with rvex that you need for x264. 
+It is a simple program but uses all the functionality with rvex that you need for x264.
 
 \begin{lstlisting}[language=C,style=C,caption=pow - kernel part,label=lst:pow-kernel]
 int a = 0xAAA00A00, b = 0xBBB00B00, result = 0xCCC00C00;
@@ -107,5 +108,5 @@ int main () {
 }
 \end{lstlisting}
 
-It is possible to distribute an already filled in rvex.h and leave the implementation to the students if they are running out of time. 
-At first it is not even necessary to give that much detail about a possible implementation. 
+It is possible to distribute an already filled in rvex.h and leave the implementation to the students if they are running out of time.
+At first it is not even necessary to give that much detail about a possible implementation.

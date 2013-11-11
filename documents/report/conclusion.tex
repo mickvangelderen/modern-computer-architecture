@@ -1,1 +1,16 @@
 \section{Conclusion}
+
+We've identified a kernel function and changed the x264 program so the kernel
+is executed on the \rvex. The kernel we used is the \satd function. Using our
+abstracted \texttt{rvex*} functions you can write the instruction memory, write
+and read the data memory and start the \rvex. Unfortunately we didn't see a
+speedup, instead we even saw a decrease in performance. Assumably this is
+because of the communication overhead. The \satd function is called many times.
+Maybe by sending more data at once, and thus executing the \rvex less times
+might improve the performance.
+
+Using our \texttt{rvex*} functions, we were able to create different test
+programs which helped us testing the communication and get to know the
+platform, getting the endianness right and fixing multiple executions of the
+\rvex.
+
