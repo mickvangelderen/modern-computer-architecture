@@ -46,6 +46,8 @@
 
 \input{abstract}
 \input{introduction}
+\input{profiling}
+\input{data-layout}
 
 \section{Communication}
 
@@ -76,56 +78,6 @@ We abstracted this away to a small interface with the following functionality:
         until the status reports that the operation was successful.
 \end{description}
 
-\section{Profiling results}
-
-We compiled the unmodified x264 application with profiling support on a VM that
-allows us to compile microblaze and \rvex{} applications.
-Unfortunately we
-cannot use gprof on the MicroBlaze machine itself so we ran gprof on the VM
-itself.
-
-Using the input video $\sim$/Videos/inputs/eledream\_640x360\_8.y4m we obtained
-the following profiling results.
-
-\begin{small}
-\begin{lstlisting}
-gprof x264 | head -n 10
-Flat profile:
-
-Each sample counts as 0.01 seconds.
-  %   cumulative   self              self     total
- time   seconds   seconds    calls  ms/call  ms/call  name
- 13.70      0.10     0.10  1599044     0.00     0.00  x264_pixel_satd_8x4
- 13.70      0.20     0.10   570708     0.00     0.00  get_ref
-  6.85      0.25     0.05    38770     0.00     0.00  x264_pixel_sad_x4_16x16
-  5.48      0.29     0.04   460484     0.00     0.00  quant_4x4
-  4.11      0.32     0.03   123076     0.00     0.00  sa8d_8x8
-\end{lstlisting}\end{small}
-
-We see that the function \satd{} is called 1.6 million times during the video
-conversion. These calls together take up about $14\%$ of the total time. An
-equal amount of time is spent in \satd{}.
-
-The video eledream\_640x360\_128.y4m makes the application spend about $18\%$
-of the runtime in the pixel processing function and $16\%$ in \getref{}.
-
-The bigger our input video the more time we will spend processing and the more
-effect an optimization will have if it targets part of the processing code.
-
-Judging from the profiling information there are two potential places where
-optimization will be effective: \satd{} and \getref{}.
-
-When we looked at the source code of x264 we thought that the nature of \satd{}
-was more suitable for optimization because it had some loops and arithmetic in
-it. The \getref{} function was a lot more irregular and also harder to
-understand. On the flip side, the overhead caused by communication between the
-microblaze processor and the \rvex{} would be smaller for \getref{} because it
-is called three times less than \satd{}.
-
-In the end we chose to try and put the computation of \satd{} on the
-co-processor and let \getref{} for what it was.  The function \satd{} was
-easier to understand and making it work was more important to us than choosing
-the best optimization area right away.
 
 \section{Endianess}
 
