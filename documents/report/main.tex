@@ -47,12 +47,14 @@
 \section{The kernel function}
 
 The concept of this lab is to take a piece of code that is executed frequently
-and run it on a reconfigurable co-processor. The extracted piece of code is
+and run it on a reconfigurable co-processor. 
+The extracted piece of code is
 called the kernel and the device is in our case the \rvex{}: A reconfigurable
 and extensible VLIW processor.
 
 The kernel needs to be compiled for the \rvex{} so that we can inject the
-result, the bytecode, in to the co-processor. The rest of the code runs as
+result, the bytecode, in to the co-processor. 
+The rest of the code runs as
 usual on a regular processor.
 
 \section{Communication}
@@ -61,7 +63,8 @@ We have access to several (but not enough during the lab) FPGAs which are
 configured as Microblaze processors and run Linux.
 
 The \rvex{} is a configured as a co-processor that can be controlled using a
-number of memory mapped files.  The is a file for writing the instruction
+number of memory mapped files. 
+The is a file for writing the instruction
 memory, one for reading and writing the data memory, one for reading the status
 and one for writing control commands.
 
@@ -87,7 +90,8 @@ We abstracted this away to a small interface with the following functionality:
 \section{Profiling results}
 
 We compiled the unmodified x264 application with profiling support on a VM that
-allows us to compile microblaze and \rvex{} applications. Unfortunately we
+allows us to compile microblaze and \rvex{} applications. 
+Unfortunately we
 cannot use gprof on the Microblaze machine itself so we ran gprof on the VM
 itself.
 
@@ -109,7 +113,9 @@ Each sample counts as 0.01 seconds.
 \end{lstlisting}\end{small}
 
 We see that the function \satd{} is called 1.6 million times during the video
-conversion. These calls together take up about $14\%$ of the total time. An
+conversion. 
+These calls together take up about $14\%$ of the total time. 
+An
 equal amount of time is spend in \satd{}.
 
 The video eledream\_640x360\_128.y4m makes the application spend about $18\%$
@@ -122,33 +128,41 @@ Judging from the profiling information there are two potential places where
 optimization will be effective: \satd{} and \getref{}.
 
 When we looked at the source code of x264 we thought that the nature of \satd{}
-was more suitable for optimization because it had some loops in it. The
-\getref{} function was a lot more irregular and also harder to understand. On
+was more suitable for optimization because it had some loops in it. 
+The
+\getref{} function was a lot more irregular and also harder to understand. 
+On
 the flip side, the overhead caused by communication between the microblaze
 processor and the \rvex{} would be smaller for \getref{} because it is called
 three times less than \satd{}.
 
 In the end we chose to try and put the computation of \satd{} on the
-co-processor and let \getref{} for what it was. The function \satd{} was easier
+co-processor and let \getref{} for what it was. 
+The function \satd{} was easier
 to understand and making it work was more important to us than choosing the
 best optimization area right away.
 
 \section{Endianess}
 
 Since we had to compile for the Microblaze using the flag -DWORD-BIGENDIAN we
-figured that the Microblaze would be a big endian machine. You can always test
+figured that the Microblaze would be a big endian machine. 
+You can always test
 it by writing a multibyte value like 0xDEADBEEF to memory and read the
-individual bytes. If you read 0xDE 0xAD 0xBE 0xEF you will know that you have a
-big endian machine. If you get that sequence but in reverse you know its a
+individual bytes. 
+If you read 0xDE 0xAD 0xBE 0xEF you will know that you have a
+big endian machine. 
+If you get that sequence but in reverse you know its a
 little endian machine.
 
 \section{Results of using the \rvex{}}
 
 We modified the x264 application to log its processing time computed with
-clock\_gettime. This required linking the rt library.
+clock\_gettime. 
+This required linking the rt library.
 
 Then we tried to find an fpga that was not being used by anyone else and we ran
-several versions of the x264 application. All of them included the code from Listing \ref{lst:timing} which allowed us to get an idea of the total runtime. 
+several versions of the x264 application. 
+All of them included the code from Listing \ref{lst:timing} which allowed us to get an idea of the total runtime. 
 
 \begin{lstlisting}[style=C,caption=Capturing runtime with the monotonic clock,label=lst:timing]
 struct timespec tss, tse, tsd; // start, end and diff
@@ -168,7 +182,10 @@ if (tse.tv_nsec > tss.tv_nsec) {
 printf("Took %lu.%09lu sec\n", tsd.tv_sec, tsd.tv_nsec);
 \end{lstlisting}
 
-We ran the script from Listing \ref{lst:testscript} to get an idea of the runtimes of the different versions. Note that we already did manual test runs to get an idea of how long the runs would take. We noticed that running the same test multiple times produced very similar run times. We did not find it necessary to do multiple runs for the purposes of this lab because the error would be very small in comparison with the run times for different versions of the application:
+We ran the script from Listing \ref{lst:testscript} to get an idea of the runtimes of the different versions. 
+Note that we already did manual test runs to get an idea of how long the runs would take. 
+We noticed that running the same test multiple times produced very similar run times. 
+We did not find it necessary to do multiple runs for the purposes of this lab because the error would be very small in comparison with the run times for different versions of the application:
 
 \begin{lstlisting}
 Took 75.280923348 sec
@@ -217,11 +234,18 @@ Also, we can conclude that the gcc compiler does a teriffic job at inlining func
 We couldnt wrap our heads around doing so much communication related tasks in a function that was basicly a relatively small fixed number of basic operations (*, +, -, shifts, comparisons) and achieving a faster result by that. 
 We assumed that the rvex was extremely tightly integrated into the microblaze which allowed insane communication speeds but the test results show that this is not the case. 
 
-The speedup that we obtained can be calculated by looking at the time spent in the kernel function. This should be about 14\% for the input video eledream\_640x360\_8.y4m judging from the profiling results obtained on the VM. We cannot say exactly how much time is spent there because we cannot profile on the Microblaze. 
+The speedup that we obtained can be calculated by looking at the time spent in the kernel function. 
+This should be about 14\% for the input video eledream\_640x360\_8.y4m judging from the profiling results obtained on the VM. 
+We cannot say exactly how much time is spent there because we cannot profile on the Microblaze. 
 
-But because the rvex simple version took longer than 20 minutes which caused the ssh session to hang we cannot use the exact run time. Let us see what the speedup would be if the run time was 20 minutes exactly. 
+But because the rvex simple version took longer than 20 minutes which caused the ssh session to hang we cannot use the exact run time. 
+Let us see what the speedup would be if the run time was 20 minutes exactly. 
 
-The vanilla version spends 14\% of the 75 seconds that it runs in \satd{}. So 86\% is spent in the rest of the functions. Since we have not changed anything beside the kernel we can assume that the time spent in that part will be equal for vanilla and for rvex simple. This means that $\frac{1200 - .86*75}{75 - .86*75} = 108$ is the relative speed of the vanilla function in comparison with the rvex version. It actually runs 108 times faster. In other words, the rvex version runs 108 times slower which amounts to a speedup of -10700\% obtained by introducing rvex. 
+The vanilla version spends 14\% of the 75 seconds that it runs in \satd{}. So 86\% is spent in the rest of the functions. 
+Since we have not changed anything beside the kernel we can assume that the time spent in that part will be equal for vanilla and for rvex simple. 
+This means that $\frac{1200 - .86*75}{75 - .86*75} = 108$ is the relative speed of the vanilla function in comparison with the rvex version. 
+It actually runs 108 times faster. 
+In other words, the rvex version runs 108 times slower which amounts to a speedup of -10700\% obtained by introducing rvex. 
 
 \section{Additional assignment}
 
@@ -245,4 +269,3 @@ The vanilla version spends 14\% of the 75 seconds that it runs in \satd{}. So 86
 \bibliography{main}
 
 \end{document}
-
