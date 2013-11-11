@@ -53,7 +53,7 @@
 \input{profiling}
 \input{data-layout}
 
-\section{Communication}
+\section{Implementation}
 
 We have access to several (but not enough during the lab) FPGAs which are
 configured as MicroBlaze processors and run Linux.
@@ -67,8 +67,8 @@ We abstracted this away to a small interface with the following functionality:
 
 \begin{description}
     \item[rvexInit] \hfill \\
-        Attempts to open the files. You can also specify the bytecode which
-        will be written to the instruction memory.
+        Attempts to open the IMEM, DMEM and SMEM files. You can also specify
+        the bytecode which will be written to the instruction memory.
     \item[rvexDispose] \hfill \\
         Closes all files opened by rvexInit.
     \item[rvexWrite] \hfill \\
@@ -82,15 +82,29 @@ We abstracted this away to a small interface with the following functionality:
         until the status reports that the operation was successful.
 \end{description}
 
-
-\section{Endianess}
+\subsection{Endianness}
 
 Since we had to compile for the MicroBlaze using the flag
 \texttt{-DWORD-BIGENDIAN} we figured that the MicroBlaze would be a big endian
-machine.  You can always test it by writing a multibyte value like
+machine. You can always test it by writing a multibyte value like
 \texttt{0xDEADBEEF} to memory and read the individual bytes. If you read
 \texttt{0xDE 0xAD 0xBE 0xEF} you will know that you have a big endian machine.
 If you get that sequence but in reverse you know its a little endian machine.
+
+We write the data as big endian to the data memory. For types bigger than one
+byte we change the endianness on the \rvex{} side using a macro. Also before
+writing data to the memory from the \rvex{} the endianness should be changed.
+For the \satd{} kernel the size of the pixels is one byte, only the result is
+an integer, so four byes, which should be reversed.
+
+\subsection{Loading Instruction memory}
+
+Loading the instruction memory with separate commands before executing the
+program on the MicroBlaze is pretty inconvenient. That is why we write the
+bytedata to the instruction memory in the application. The compiled kernel
+function is actually compiled to a C header file which can directly be written
+to the instruction memory. This solves the inconvenience of multiple files for
+the same program.
 
 \section{Results of using the \rvex{}}
 
