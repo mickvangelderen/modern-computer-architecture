@@ -20,7 +20,7 @@ models there are a few criteria.
 		extensions or library APIs is of importance to the learning curve and maintainability.
 	\item \textbf{Scaling:} Can the solution be used on different
 		architectures, how does it scale to many-core processors? Does it only
-		work on CPUs or also GPUs, DSPs or even across a cluster. 
+		work on CPUs or also GPUs, DSPs or even across a cluster.
 \end{itemize}
 
 \paragraph{Performance} \cite{CaoPerformanceAnalysis} presents a good
@@ -60,8 +60,11 @@ so it is not NVIDIA dependent anymore \cite{ZhangDataParallelProgramming}.
 Also the programmer doesn't have to think about the number of actual cores
 anymore, because that's somewhere the programming model can manage. Between
 the papers is a difference that \cite{BrightwellParallelPhaseModel} describes
-an model that even generalizes over physical machines to a network cluster using an intelligent allocation mechanism. For user applications this is slightly more costly on a lower amount of cores but pays off when the number of cores approaches 100 or more. 
-There the programmer does not need to worry about which node and core does the
-computation, only that the computation kernel should be parallelized. Other
-programming models like GStream and OpenCL focus more on GPUs
-\cite{KimExploitingMultiManyCore, ZhangDataParallelProgramming}.
+an model that even generalizes over physical machines to a network cluster
+using an intelligent allocation mechanism. For user applications this is
+slightly more costly on a lower amount of cores but pays off when the number of
+cores approaches 100 or more.  There the programmer does not need to worry
+about which node and core does the computation, only that the computation
+kernel should be parallelized. Other programming models like GStream and OpenCL
+focus more on GPUs \cite{KimExploitingMultiManyCore,
+ZhangDataParallelProgramming}.
