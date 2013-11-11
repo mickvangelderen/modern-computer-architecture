@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "rvex.h"
-#include "mult.bh"
+#include "bytecodes/mult.h"
 
 int main(int argc, char **argv) {
 
