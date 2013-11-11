@@ -227,23 +227,13 @@ with the rvex version.  It actually runs 108 times faster.  In other words, the
 rvex version runs 108 times slower which amounts to a speedup of -10700\%
 obtained by introducing rvex.
 
-Theoretically, the perfect optimalization for the selected kernel would be to reduce the computation time to 0. 
+Theoretically, the perfect optimalization for the selected kernel would be to reduce the computation time to 0.
 This means that the 14\% becomes 0\% and so the maximum attainable speedup is $\frac{100}{100 - 14} - 100 = 16\%$
 
 \input{additional-assignment}
+\input{conclusion}
 
-\section{Conclusion}
-
-All in all the lab was definitely fun. 
-It felt really rewarding to hack something together, inject some bytecode and see it working. 
-
-Regarding the results, we have some suggestions that we would have tried out given enough time. 
-
-We still believe in the \rvex{} so we would try to reduce the performance loss of the current bottleneck: communication. 
-This can be done by reducing the number of reads and writes to the \rvex{}. 
-This means selecting a bigger part of the application and send it over to the \rvex{} in its entirety. 
-
-We are interested in if the \rvex{} performance is dependent on the type of program that is run. 
-Is it more efficient for highly repeating code or does it perform just as well for dynamic code with little repitition compared to the normal CPUs?
+%\bibliographystyle{plain}
+%\bibliography{main}
 
 \end{document}
