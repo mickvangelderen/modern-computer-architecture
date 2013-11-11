@@ -1,0 +1,15 @@
+
+\begin{abstract}
+    For the practical assignment of the Modern Computer Architecture course
+    we've changed the x264 program. We've profiled x264 and extracted the
+    \satd{} as kernel function. To get a performance improvement we've moved
+    the execution of the kernel function to the \rvex{}, a co-processor of the
+    Microblaze. A requirement for this is to load the program into the
+    instruction memory and write and read the data to and from the data memory.
+    We've found that our implementation did not generate a performance
+    increase, but rather a decrease. We think this is due to the communication
+    overhead.
+\end{abstract}
+
+
+
