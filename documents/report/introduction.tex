@@ -1,0 +1,23 @@
+\section{Introduction}
+
+The assignment for this report was basically, find a kernel function from an
+application and run it on the \rvex{}. To do this there are a few things we
+need to know first:
+
+\paragraph{Platform} The platform the program will run on is the ERA platform.
+It consists out of the host processor, the MicroBlaze, accelerated with a
+VLIW co-processor, the \rvex{}. For the co-processor computationally intensive
+kernels can be extracted to achieve a performance increase.
+
+\paragraph{Kernel function} The extracted piece of code is called the kernel.
+The kernel needs to be compiled for the \rvex{} so that we can inject the
+result, the bytecode, in to the co-processor. The rest of the code runs as
+usual on a regular processor.
+
+\paragraph{x264} The x264 program is the application we will try to improve
+using the \rvex{}. x264 is a software library for encoding video streams
+in the H.264 compression format.
+
+The goal for this report is to extract the correct kernel, using profiling and
+compile this for the \rvex{}. To execute the kernel on the \rvex{} there should
+be communication between the processor and the co-processor.

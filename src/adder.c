@@ -15,52 +15,52 @@ int main(int argc, char **argv) {
 	int b = atoi(argv[2]);
 	int c = a + 1;
 	int d = b + 2;
-	a = changeEndianess32(a);
-	b = changeEndianess32(b);
-	c = changeEndianess32(c);
-	d = changeEndianess32(d);
 
 	int result1, result2;
 
-	rvexInit(bytecode, sizeof(bytecode));
+	rvexInit(&rvex0, bytecode, sizeof(bytecode),
+		RVEX_0_INSTRUCTION_MEMORY_FILE,
+		RVEX_0_DATA_MEMORY_FILE,
+		RVEX_0_CORE_CTL_FILE,
+		RVEX_0_CORE_STATUS_FILE);
 
 	// fist time
-	rvexWrite(&a, sizeof(int));
-	rvexWrite(&b, sizeof(int));
+	rvexWrite(&rvex0, &a, sizeof(int));
+	rvexWrite(&rvex0, &b, sizeof(int));
 
 	// Clear status and start procedure
-	rvexGo();
+	rvexGo(&rvex0);
 
-	rvexSeek(2 * sizeof(int));
+	rvexSeek(&rvex0, 2 * sizeof(int));
 
-	rvexRead(&result1, sizeof(int));
+	rvexRead(&rvex0, &result1, sizeof(int));
 
 	printf("result of %d + %d = %d\n",
-			changeEndianess32(a),
-			changeEndianess32(b),
-			changeEndianess32(result1));
+			a,
+			b,
+			result1);
 
 	// second time
 
-	rvexSeek(0);
+	rvexSeek(&rvex0, 0);
 
-	rvexWrite(&c, sizeof(int));
-	rvexWrite(&d, sizeof(int));
+	rvexWrite(&rvex0, &c, sizeof(int));
+	rvexWrite(&rvex0, &d, sizeof(int));
 
 	// Clear status and start procedure
-	rvexGo();
+	rvexGo(&rvex0);
 
-	rvexSeek(2 * sizeof(int));
+	rvexSeek(&rvex0, 2 * sizeof(int));
 
-	rvexRead(&result2, sizeof(int));
+	rvexRead(&rvex0, &result2, sizeof(int));
 
 	printf("result of %d + %d = %d\n",
-			changeEndianess32(c),
-			changeEndianess32(d),
-			changeEndianess32(result2));
+			c,
+			d,
+			result2);
 
 	// done
-	rvexDeInit();
+	rvexDispose(&rvex0);
 
 	printf("done\n");
 
