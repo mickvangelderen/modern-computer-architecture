@@ -3,59 +3,79 @@ Goal of the paper:
 	Determine the challenges and explain which one is the hardest to solve and
 	which of the discussed approaches handles it the best.
 
-Criteria suggestions:
+What are we comparing? -> paralellization techniques
+How do we compare them? -> for each criteria find evidence that the technique belongs mostly in one of the categories
+How do we get to a conclusion? -> we take several use cases from the papers and find a fitting technique from the comparison table
 
-Audience:
-	researchers - Programmers who dedicate their research to parallelization
-		techniques
-	professionals - Programmers with experience in writing performant parallel
-		applications
-	application programmers - People who work in the programming sector
-	consumer programmers - Average people who learn programming or scripting for their enjoyment and automating basic tasks
+Use cases:
 
-Approach:
-	auto - Try to parallelize sequential programs automatically (small gains,
-		little effort) auto parallelization is a difficult problem
-	programming - Achieve parallelism by re-programming sequential applications
-		(large gains, big effort) thinking in parallel terms is difficult for
-		people used to sequential programming
+	// task farm benefitting use case?
+	// divide and conquer benefitting use case?
 
-Form:
-	extension to existing language - macros/functions/abstract data types
-	a new language - A design pattern is a recurring problem and a reusable
-		solution to it. Separation of concerns, split solution computation and
-		orchestration
+Criteria:
 
-Host programming language:
-	C/C++/C#/Java or domain specific
+	Functionality:
 
-Model:
-	shared memory - memory is shared between workers, locking is required.
-		Examples: OpenMP, Pthreads
-	message passing - data is shared over a channel between workers, allows
-		multi node systems. Example: MPI
-	hybrid - combines the strengths of shared memory and message passing for
-		applications that can benefit from a two level parallelism hierarchy.
-		Introduces new weaknesses. Example: MPI + OpenMP
+		Audience:
+			researchers - Programmers who dedicate their research to parallelization
+				techniques
+			professionals - Programmers with experience in writing performant parallel
+				applications
+			application programmers - People who work in the programming sector
+			consumer programmers - Average people who learn programming or scripting for their enjoyment and automating basic tasks
 
-Extensibility (if applicable):
-	Allows defining your own constructs
+		Approach:
+			automated - Try to parallelize sequential programs automatically (small gains,
+				little effort) auto parallelization is a difficult problem
+			programming - Achieve parallelism by re-programming sequential applications
+				(large gains, big effort) thinking in parallel terms is difficult for
+				people used to sequential programming
+			hybrid - Combine the two
 
-Flexibility (if applicable):
-	Maximum flexibility if provided tools allow you to at least replicate the
-	system (with maintainable code)
+		Extensibility (if applicable):
+			Is it possible to extend the parallelization method with your own constructs?
+			// Bedenk 2 of meer categorien waar we modellen in kunnen delen
 
-Application:
-	multi-core microprocessors
-	multi-core microprocessor network
-	graphical processing unit network
-	digital signal processing unit network
-	fpga network
-	hybrid network
+		Flexibility (if applicable):
+			How flexible is the technique
+			extremely flexible - The technique could potentially be recreated with the provided tools
+			flexible - The technique can be used in all common use cases
+			not flexible - The technique is limited to a small set of use cases
 
-Common parallelization techniques:
-	task farm
-	divide and conquer
+
+		Scalability (if applicable):
+			How easy is it to scale applications from 10 core to 1000 core processors or a networked machine.
+			automated - No manual fiddling with the code is require
+			parameter adjustment - Parameters in the code have to be adjusted
+			rewrite - The new machine requires close to a new application
+
+		Application:
+			multi-core microprocessors
+			multi-core microprocessor network
+			graphical processing unit network
+			digital signal processing unit network
+			fpga network
+			hybrid network
+
+	Implementation details:
+
+		Host programming language:
+			C/C++/C#/Java or domain specific
+
+		Form:
+			extension to existing language - macros/functions/abstract data types
+			a new language - A design pattern is a recurring problem and a reusable
+				solution to it. Separation of concerns, split solution computation and
+				orchestration
+
+		Data sharing model:
+			shared memory - memory is shared between workers, locking is required.
+				Examples: OpenMP, Pthreads
+			message passing - data is shared over a channel between workers, allows
+				multi node systems. Example: MPI
+			hybrid - combines the strengths of shared memory and message passing for
+				applications that can benefit from a two level parallelism hierarchy.
+				Introduces new weaknesses. Example: MPI + OpenMP
 
 http://www.google.com/trends/explore?q=OpenMP%2C+OpenCL%2C+MPI%2C+CUDA%2C+Cilk#cat=0-5&q=OpenMP%2C%20OpenCL%2C%20MPI%2C%20CUDA%2C%20Pthreads&cmpt=q
 http://www.google.com/trends/explore?q=parallel%20computing%2C%20distributed%20computing%2C%20parallel%20programming%2C%20%20distributed%20programming&cmpt=q#cat=0-5&q=parallel+computing,+distributed+computing,+parallel+programming,+distributed+programming&cmpt=q
