@@ -1,41 +1,55 @@
 Goal of the paper:
-	Find promising parallelization techniques and list their pro's and cons. Determine the challenges and explain which one is the hardest to solve and which of the discussed approaches handles it the best. 
-
+	Find promising parallelization techniques and list their pro's and cons.
+	Determine the challenges and explain which one is the hardest to solve and
+	which of the discussed approaches handles it the best.
 
 Criteria suggestions:
 
 Audience:
-	researchers - Programmers who dedicate their research to parallelization techniques
-	professionals - Programmers with experience in writing performant parallel applications
+	researchers - Programmers who dedicate their research to parallelization
+		techniques
+	professionals - Programmers with experience in writing performant parallel
+		applications
 	application programmers - People who work in the programming sector
-	consumer programmers - Average people who learn programming or scripting for their enjoyment and automating basic tasks
+	consumer programmers - Average people who learn programming or scripting
+		for their enjoyment and automating basic tasks
 
 Approach:
-	auto - Try to parallelize sequential programs automatically (small gains, little effort) auto parallelization is a difficult problem
-	programming - Achieve parallelism by re-programming sequential applications (large gains, big effort) thinking in parallel terms is difficult for people used to sequential programming
+	auto - Try to parallelize sequential programs automatically (small gains,
+		little effort) auto parallelization is a difficult problem
+	programming - Achieve parallelism by re-programming sequential applications
+		(large gains, big effort) thinking in parallel terms is difficult for
+		people used to sequential programming
 
 Form:
 	extension to existing language - macros/functions/abstract data types
-	a new language  - A design pattern is a recurring problem and a reusable solution to it. Separation of concerns, split solution computation and orchestration
+	a new language - A design pattern is a recurring problem and a reusable
+		solution to it. Separation of concerns, split solution computation and
+		orchestration
 
-Host programming language: 
+Host programming language:
 	C/C++/C#/Java or domain specific
 
 Model:
-	shared memory - memory is shared between workers, locking is required. Examples: OpenMP, Pthreads
-	message passing - data is shared over a channel between workers, allows multi node systems. Example: MPI
-	hybrid - combines the strengths of shared memory and message passing for applications that can benefit from a two level paralellism hierarchy. Introduces new weaknesses. Example: MPI + OpenMP
+	shared memory - memory is shared between workers, locking is required.
+		Examples: OpenMP, Pthreads
+	message passing - data is shared over a channel between workers, allows
+		multi node systems. Example: MPI
+	hybrid - combines the strengths of shared memory and message passing for
+		applications that can benefit from a two level parallelism hierarchy.
+		Introduces new weaknesses. Example: MPI + OpenMP
 
 Extensibility (if applicable):
 	Allows defining your own constructs
-	
+
 Flexibility (if applicable):
-	Maximum flexibility if provided tools allow you to at least replicate the system (with maintainable code)
+	Maximum flexibility if provided tools allow you to at least replicate the
+	system (with maintainable code)
 
 Application:
 	distributed
-	homogenous
-	heterogenous
+	homogeneous
+	heterogeneous
 	within processor
 
 Common parallelization techniques:
