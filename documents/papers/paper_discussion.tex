@@ -32,12 +32,14 @@ an essential bridge between hardware and high-level programming languages.
 %problem into sub-tasks that can run in parallel.
 
 Task-parallel programming is becoming increasingly popular in the last decade.
-Several task-parallel libraries have been developed. 
-These libraries allow programmers to easily generate parallel tasks by handling how the parallelization is realized on the underlying hardware. 
-Task scheduling and load balancing are transparently completed by the runtime systems.
+Several task-parallel libraries have been developed. These libraries allow
+programmers to easily generate parallel tasks by handling how the
+parallelization is realized on the underlying hardware.  Task scheduling and
+load balancing are transparently completed by the runtime systems.
 
 There are three typical task-parallel programming models described: Intel
-Thread Building library (TBB), MIT Cilk and OpenMP 3.0. Several experiments are done in order to compare these programming models. 
+Thread Building library (TBB), MIT Cilk and OpenMP 3.0. Several experiments are
+done in order to compare these programming models.
 
 Cilk is a task-based parallel programming model language. Cilk philosophy is
 that the programmer can expose parallelism using a few keywords, while the Cilk
@@ -197,10 +199,9 @@ much smaller, while having the same or better performance.
 	\end{tabular}
 \end{table}
 
-The paper concludes with the statement that it presented a parallel programming model for the
-next generation high-end machines; machines with a cluster of nodes where each node has a large number of processing cores. 
-
-
+The paper concludes with the statement that it presented a parallel programming
+model for the next generation high-end machines; machines with a cluster of
+nodes where each node has a large number of processing cores.
 
 \subsection{Exploiting Multi- and Many-core Parallelism for Accelerating Image Compression}
 
@@ -210,7 +211,7 @@ Ghil Kim and Yong Soo Choi in 2011. It describes how they used Intel TBB and
 OpenCL to improve the performance by running a 2D DCT (discrete cosine
 transform) in parallel.
 
-As discussed in \section{introduction}, the current solution to get better
+As discussed in section~\ref{introduction}, the current solution to get better
 performance is adding more cores to CPUs and GPUs. That is why parallel
 computing techniques such as incorporating multiple processing cores and other
 acceleration technologies are increasing in importance. In order to take
