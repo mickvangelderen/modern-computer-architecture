@@ -56,3 +56,7 @@ Common parallelization techniques:
 	task farm
 	divide and conquer
 
+Scalability:
+	How well does the method scale to more processors. How is the
+	communication and scheduling overhead. How good is it in dividing work over
+	more processors.
