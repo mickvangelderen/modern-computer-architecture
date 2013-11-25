@@ -2,7 +2,7 @@ Implicitly Parallel Programming Models for Thousand-Core Microprocessors
 
 Implicit parallel programming model for many-core microprocessors
 	goals:
-		Solve sotware scalability challenges for many-core microprocessors
+		Solve software scalability challenges for many-core microprocessors
 	means:
 		Express parallel algorithms by asserting high-level properties on top of sequential programming language
 		Parallelizing compilers
@@ -17,18 +17,18 @@ The more cores, the more tempting for vendors to say that applications need to b
 Automatically introducing algorithm level concurrency in sequential programs is too hard
 We want to have the programmers do parallelization suggestions in the code
 Converting legacy code will be troublesome, parallelization and reliability will be achieved by redeveloping the entire project with modern coding standards and implicit parallel programming
-Expert programmers will continue to use explicity parallel programming for specialized situations
-We think implicit paralllel programming will have the same effect on the software world as high level programming languages had.
+Expert programmers will continue to use explicitly parallel programming for specialized situations
+We think implicit parallel programming will have the same effect on the software world as high level programming languages had.
 
-Preveously succesful models
+Previously successful models
 
-pipelining (hardware parallelization techniques)
+Hardware parallelization techniques (VLIW, pipelining)
 dedicated processing units (GPU, parallel execution abstracted away)
 MPI/threading models, CUDA
 
 3 Cost of parallel programming
 
-Explicit paralellization is heavily affected by hardware and programmers must understand what techniques to use. Testing optimizations is error prone and tedious which makes writing parallel applications difficult when time is of the essence. Changing the platform upon which software is ran changes the preferable optimization techniques and introduces extra work.
+Explicit parallelization is heavily affected by hardware and programmers must understand what techniques to use. Testing optimizations is error prone and tedious which makes writing parallel applications difficult when time is of the essence. Changing the platform upon which software is ran changes the preferable optimization techniques and introduces extra work.
 
 Composing large systems of parallelized modules tends to be ineffective in the grand scheme of things.
 
@@ -36,13 +36,21 @@ Verifying programs becomes increasingly difficult and time consuming because of 
 
 4 Implicitly parallel programming
 
-Comparing two algorithms for video compression that are almost the same but differ in one aspect. The aspect has dependencies on previous computations in the first algorithm and not in the second which allows the second one to be paralellized much better. There are small but notable differences in the outputs though because the algorithms are not equal. These should not be made by a compiler or tool.
+Comparing two algorithms for video compression that are almost the same but differ in one aspect. The aspect has dependencies on previous computations in the first algorithm and not in the second which allows the second one to be parallelized much better. There are small but notable differences in the outputs though because the algorithms are not equal. These should not be made by a compiler or tool.
 
 4.1 Concurrency discovery
 
-Discover paralellizable code, let programmer annotate areas
+Discover parallelizable code, let programmer annotate areas
+Use algorithms to discover unrelated pointer and memory access
 
-...
+4.2 Code-Gen Space Exploration
+
+Using the proposed method, code will be generated. The advantage of this is that there are multiple ways to exploit concurrency.
+The compiler could output different kind of code depending on the chosen strategy.
+
+4.3 Parallel execution hardware
+
+... Not very important I think.
 
 5 Conclusion
 

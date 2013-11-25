@@ -3,7 +3,7 @@ Goal of the paper:
 	Determine the challenges and explain which one is the hardest to solve and
 	which of the discussed approaches handles it the best.
 
-What are we comparing? -> paralellization techniques
+What are we comparing? -> parallelization techniques
 How do we compare them? -> for each criteria find evidence that the technique belongs mostly in one of the categories
 How do we get to a conclusion? -> we take several use cases from the papers and find a fitting technique from the comparison table
 
